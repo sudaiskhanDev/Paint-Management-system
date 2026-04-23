@@ -1,0 +1,295 @@
+/* =============================================
+   SALE ITEMS PAGE - DETAILED CSS
+   White & Dark Maroon Theme | No Sidebar Styles
+   Table with Actions | Fully Responsive
+   ============================================= */
+
+/* ---------- GOOGLE FONTS ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+
+/* ---------- DASHBOARD CONTENT BASE ---------- */
+.dashboard-content {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #fefcf8 0%, #f8f5f2 100%);
+    min-height: 100vh;
+    padding: 2rem;
+    color: #1e293b;
+}
+
+/* ---------- HEADING ---------- */
+.dashboard-content h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #5E0B15;
+    margin-bottom: 1.8rem;
+    letter-spacing: -0.3px;
+    position: relative;
+    display: inline-block;
+}
+
+.dashboard-content h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #7A1C2C, #9E2A3B);
+    border-radius: 3px;
+}
+
+/* ============================================
+   TABLE STYLES
+   ============================================ */
+table {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 12px 24px -12px rgba(94, 11, 21, 0.1);
+    border-collapse: separate;
+    border-spacing: 0;
+    transition: box-shadow 0.2s;
+}
+
+table:hover {
+    box-shadow: 0 20px 30px -12px rgba(94, 11, 21, 0.15);
+}
+
+/* Table Header */
+thead tr {
+    background: #5E0B15;
+}
+
+th {
+    padding: 1rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    border-bottom: 2px solid #7A1C2C;
+}
+
+th:first-child {
+    border-top-left-radius: 28px;
+    padding-left: 1.5rem;
+}
+
+th:last-child {
+    border-top-right-radius: 28px;
+    padding-right: 1.5rem;
+}
+
+/* Table Body */
+tbody tr {
+    border-bottom: 1px solid #ede7e6;
+    transition: background 0.2s ease;
+}
+
+tbody tr:hover {
+    background: #fef5f3;
+}
+
+td {
+    padding: 1rem 1rem;
+    color: #1e293b;
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+
+td:first-child {
+    padding-left: 1.5rem;
+    font-weight: 500;
+    color: #5E0B15;
+}
+
+td:last-child {
+    padding-right: 1.5rem;
+}
+
+/* Price & Total columns */
+td:nth-child(6),   /* Price */
+td:nth-child(7) {  /* Total */
+    font-weight: 600;
+    color: #7A1C2C;
+}
+
+/* Quantity column */
+td:nth-child(5) {
+    font-weight: 500;
+    color: #1e293b;
+}
+
+/* Delete Button */
+.btn-delete {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+    background: #dc2626;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+}
+
+.btn-delete:active {
+    transform: translateY(1px);
+}
+
+/* ============================================
+   RESPONSIVE (MOBILE CARD LAYOUT)
+   ============================================ */
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 1rem;
+    }
+
+    /* Convert table to cards */
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tbody tr {
+        background: #ffffff;
+        border-radius: 24px;
+        margin-bottom: 1.2rem;
+        padding: 1rem;
+        box-shadow: 0 4px 12px rgba(94, 11, 21, 0.08);
+        border: 1px solid #ede7e6;
+    }
+
+    td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.7rem 0;
+        border-bottom: 1px dashed #ede7e6;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    td:last-child {
+        border-bottom: none;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: #5E0B15;
+        background: #fef5f3;
+        padding: 0.2rem 0.8rem;
+        border-radius: 30px;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        width: 100px;
+        flex-shrink: 0;
+    }
+
+    /* Set labels for each column */
+    td:nth-child(1)::before { content: "ID"; }
+    td:nth-child(2)::before { content: "Sale ID"; }
+    td:nth-child(3)::before { content: "Customer"; }
+    td:nth-child(4)::before { content: "Product"; }
+    td:nth-child(5)::before { content: "Quantity"; }
+    td:nth-child(6)::before { content: "Price"; }
+    td:nth-child(7)::before { content: "Total"; }
+    td:nth-child(8)::before { content: "Actions"; }
+
+    .btn-delete {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    td::before {
+        width: 80px;
+        font-size: 0.65rem;
+    }
+    td {
+        font-size: 0.85rem;
+    }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+table {
+    animation: fadeSlideUp 0.4s ease-out;
+}
+
+tbody tr {
+    animation: fadeSlide 0.2s ease backwards;
+}
+
+tbody tr:nth-child(1) { animation-delay: 0.02s; }
+tbody tr:nth-child(2) { animation-delay: 0.05s; }
+tbody tr:nth-child(3) { animation-delay: 0.08s; }
+tbody tr:nth-child(4) { animation-delay: 0.11s; }
+
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+@media print {
+    .dashboard-content {
+        background: white;
+        padding: 0;
+    }
+    .btn-delete {
+        display: none;
+    }
+    table {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    th {
+        background: #f1f1f1;
+        color: black;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+/* ========== END OF SALE ITEMS CSS ========== */

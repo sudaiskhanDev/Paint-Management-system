@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Css/Admin dashboard.css">
+    <link rel="stylesheet" href="../../Css/Pages/Purchase.css">
+    <title>Purchases</title>
+     
+</head>
+<body>
+
+<div class="main-admin-dashboard">
+
+    <!-- SIDEBAR -->
+    <div class="side-bar">
+        <h1>Admin Dashboard</h1>
+
+       <div class="pages-links">
+                <ul>
+                    <a href="../Admin dashboard.html"><li>Home</li></a>
+                    <a href="./Add Staff.html"><li>Add Staff</li></a>
+                    <a href="./Brands.html"><li>Brands</li></a>
+                    <a href="./Categories.html"><li>Categories</li></a>
+                    <a href="./Customers.html"><li>Customers</li></a>
+                    <a href="./inventory.html"><li>Inventory</li></a>
+                    <a href="./Products.html"><li>Products</li></a>
+                    <a href="./Purchase.html"><li>Purchase</li></a>
+                    <a href="./purchase_items.html"><li>Purchase Items</li></a>
+                    <a href="./Sales.html"><li>Sales</li></a>
+                    <a href="./SaleItem.html"><li>Sale Items</li></a>
+                    <a href="./Suppliers.html"><li>Suppliers</li></a>
+                    <a href="./Reports.html"><li>Reports</li></a>
+                    
+
+                </ul>
+            </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="dashboard-content">
+
+        <h2>Purchases</h2>
+
+        <!-- FORM -->
+        <form id="purchase-form">
+
+            <input type="hidden" id="purchase-id">
+
+            <input type="number" id="purchase-amount" placeholder="Total Amount" required>
+            <input type="date" id="purchase-date" required>
+
+            <!-- Supplier dropdown -->
+            <select id="purchase-supplier" required>
+                <option value="">Loading suppliers...</option>
+            </select>
+
+            <button type="submit">Save Purchase</button>
+            <button type="button" id="cancel-btn" style="display:none;">Cancel</button>
+
+        </form>
+
+        <hr>
+
+        <!-- TABLE -->
+        <table border="1" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Supplier</th>
+                    <th>Total Amount</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="purchase-table-body"></tbody>
+        </table>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     FULL JS
+========================= -->
+<script>
+
+const PURCHASE_API = "http://127.0.0.1:8000/api/purchases";
+const SUPPLIER_API = "http://127.0.0.1:8000/api/suppliers";
+
+/* =========================
+   LOAD SUPPLIERS DROPDOWN
+========================= */
+async function loadSuppliers() {
+
+    const res = await fetch(SUPPLIER_API);
+    const suppliers = await res.json();
+
+    const dropdown = document.getElementById("purchase-supplier");
+
+    dropdown.innerHTML = `<option value="">Select Supplier</option>`;
+
+    suppliers.forEach(s => {
+
+        const option = document.createElement("option");
+        option.value = s.id;
+
+        // show name + phone in dropdown
+        option.textContent = `${s.name} (${s.phone})`;
+
+        dropdown.appendChild(option);
+    });
+}
+
+/* =========================
+   LOAD PURCHASES TABLE
+========================= */
+async function loadPurchases() {
+
+    const res = await fetch(PURCHASE_API);
+    const purchases = await res.json();
+
+    const tbody = document.getElementById("purchase-table-body");
+    tbody.innerHTML = "";
+
+    purchases.forEach(p => {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${p.id}</td>
+
+            <td>
+                <strong>${p.supplier?.name || '-'}</strong><br>
+                <small>${p.supplier?.phone || '-'}</small>
+            </td>
+
+            <td>${p.total_amount}</td>
+            <td>${p.purchase_date}</td>
+
+            <td>
+                <button class="btn-edit" onclick="editPurchase(${p.id}, ${p.total_amount}, '${p.purchase_date}', ${p.supplier_id})">
+                    Edit
+                </button>
+
+                <button class="btn-delete" onclick="deletePurchase(${p.id})">
+                    Delete
+                </button>
+            </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+}
+
+/* =========================
+   ADD / UPDATE PURCHASE
+========================= */
+document.getElementById("purchase-form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const id = document.getElementById("purchase-id").value;
+
+    const data = {
+        supplier_id: document.getElementById("purchase-supplier").value,
+        total_amount: document.getElementById("purchase-amount").value,
+        purchase_date: document.getElementById("purchase-date").value
+    };
+
+    if (id) {
+
+        await fetch(`${PURCHASE_API}/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        alert("Purchase Updated!");
+
+    } else {
+
+        await fetch(PURCHASE_API, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        alert("Purchase Added!");
+    }
+
+    this.reset();
+    document.getElementById("purchase-id").value = "";
+    document.getElementById("cancel-btn").style.display = "none";
+
+    loadPurchases();
+});
+
+/* =========================
+   EDIT PURCHASE
+========================= */
+function editPurchase(id, amount, date, supplier_id) {
+
+    document.getElementById("purchase-id").value = id;
+    document.getElementById("purchase-amount").value = amount;
+    document.getElementById("purchase-date").value = date;
+    document.getElementById("purchase-supplier").value = supplier_id;
+
+    document.getElementById("cancel-btn").style.display = "inline-block";
+}
+
+/* =========================
+   DELETE PURCHASE
+========================= */
+async function deletePurchase(id) {
+
+    if (!confirm("Are you sure?")) return;
+
+    await fetch(`${PURCHASE_API}/${id}`, {
+        method: "DELETE"
+    });
+
+    alert("Deleted!");
+    loadPurchases();
+}
+
+/* =========================
+   CANCEL EDIT
+========================= */
+document.getElementById("cancel-btn").addEventListener("click", function() {
+
+    document.getElementById("purchase-form").reset();
+    document.getElementById("purchase-id").value = "";
+    this.style.display = "none";
+});
+
+/* =========================
+   INIT
+========================= */
+loadSuppliers();
+loadPurchases();
+
+</script>
+
+</body>
+</html>
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Css/Admin dashboard.css">
+    <link rel="stylesheet" href="../../Css/Pages/Purchase.css">
+    <title>Document</title>
+</head>
+<body>
+     <div class="main-admin-dashboard">
+        
+        <div class="side-bar">
+            <h1>Admin Dashboard</h1>
+
+           <div class="pages-links">
+                <ul>
+                    <a href="../Admin dashboard.html"><li>Home</li></a>
+                    <a href="./Add Staff.html"><li>Add Staff</li></a>
+                    <a href="./Brands.html"><li>Brands</li></a>
+                    <a href="./Categories.html"><li>Categories</li></a>
+                    <a href="./Customers.html"><li>Customers</li></a>
+                    <a href="./Inventory.html"><li>Inventory</li></a>
+                    <a href="./Products.html"><li>Products</li></a>
+                    <a href="./Purchase.html"><li>Purchase</li></a>
+                    <a href="./purchase_items.html"><li>Purchase Items</li></a>
+                    <a href="./Sales.html"><li>Sales</li></a>
+                    <a href="./SaleItem.html"><li>Sale Items</li></a>
+                    <a href="./Suppliers.html"><li>Suppliers</li></a>
+                </ul>
+            </div>
+        </div>
+        
+       <div class="dashboard-content">
+
+    <h2>Purchases</h2>
+
+    <form id="purchase-form">
+        <input type="number" id="purchase-amount" placeholder="Total Amount" required>
+        <input type="date" id="purchase-date" required>
+
+        <select id="purchase-supplier" required>
+            <option value="">Select Supplier</option>
+        </select>
+
+        <input type="hidden" id="purchase-id">
+
+        <button type="submit" id="form-btn">Add Purchase</button>
+        <button type="button" id="cancel-btn" style="display:none;">Cancel</button>
+    </form>
+
+    <table id="purchases-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Supplier</th>
+                <th>Total Amount</th>
+                <th>Purchase Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+        
+    </div>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Css/Admin dashboard.css">
+    <title>Document</title>
+</head>
+<body>
+     <div class="main-admin-dashboard">
+        
+        <div class="side-bar">
+            <h1>Admin Dashboard</h1>
+
+            <div class="pages-links">
+                <ul>
+                    <a href="../Admin dashboard.html"><li>Home</li></a>
+                    <a href="./Add Staff.html"><li>Add Staff</li></a>
+                    <a href="./Brands.html"><li>Brands</li></a>
+                </ul>
+            </div>
+        </div>
+        
+       <div class="dashboard-content">
+            
+        
+           
+             
+        </div>
+        
+    </div>
+</body>
+</html>
+</body>
+</html>
+-->

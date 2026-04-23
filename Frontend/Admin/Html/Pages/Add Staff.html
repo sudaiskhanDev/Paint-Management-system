@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../../Css/Admin dashboard.css">
+    <link rel="stylesheet" href="../../Css/Pages/Add Staff.css">
+    <title>Document</title>
+</head>
+<body>
+      <div class="main-admin-dashboard">
+        
+        <!-- Sidebar containing navigation links for admin modules -->
+        <div class="side-bar">
+            <h1>Admin Dashboard</h1>
+
+             <div class="pages-links">
+                <ul>
+                    <a href="../Admin dashboard.html"><li>Home</li></a>
+                    <a href="./Add Staff.html"><li>Add Staff</li></a>
+                    <a href="./Brands.html"><li>Brands</li></a>
+                    <a href="./Categories.html"><li>Categories</li></a>
+                    <a href="./Customers.html"><li>Customers</li></a>
+                    <a href="./inventory.html"><li>Inventory</li></a>
+                    <a href="./Products.html"><li>Products</li></a>
+                    <a href="./Purchase.html"><li>Purchase</li></a>
+                    <a href="./purchase_items.html"><li>Purchase Items</li></a>
+                    <a href="./Sales.html"><li>Sales</li></a>
+                    <a href="./SaleItem.html"><li>Sale Items</li></a>
+                    <a href="./Suppliers.html"><li>Suppliers</li></a>
+                    <a href="./Reports.html"><li>Reports</li></a>
+                    
+
+                </ul>
+            </div>
+        </div>
+        
+       <div class="dashboard-content">
+           <h2>Staff Management</h2>
+
+            <!-- Form Section -->
+            <div class="form-container">
+                <form id="addStaffForm">
+                    <input type="text" id="name" placeholder="Full Name" required>
+                    <input type="email" id="email" placeholder="Email Address" required>
+                    <input type="password" id="password" placeholder="Password" required>
+
+                    <select id="role">
+                        <option value="staff">Staff</option>
+                        <option value="admin">Admin</option>
+                    </select>
+
+                    <button type="submit">Add Staff Member</button>
+                </form>
+                <p id="message"></p>
+            </div>
+
+            <!-- Table Section -->
+            <table id="users-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>New Password</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="users-tbody"></tbody>
+            </table>
+             
+        </div>
+        
+    </div>
+    
+<script>
+
+// ================= CONFIG =================
+const apiUrl = "http://127.0.0.1:8000/api/users";
+const token = localStorage.getItem("token");
+
+const usersTbody = document.getElementById("users-tbody");
+
+// ================= CREATE =================
+document.getElementById("addStaffForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const role = document.getElementById("role").value;
+
+    await fetch("http://127.0.0.1:8000/api/user/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ name, email, password, role })
+    });
+
+    document.getElementById("message").innerText = "Staff Added";
+    document.getElementById("addStaffForm").reset();
+
+    loadUsers();
+});
+
+
+// ================= READ =================
+async function loadUsers() {
+
+    const res = await fetch(apiUrl, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    const users = await res.json();
+
+    usersTbody.innerHTML = ""; 
+
+    users.forEach(user => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td><input type="text" value="${user.name}" id="name-${user.id}"></td>
+            <td><input type="email" value="${user.email}" id="email-${user.id}"></td>
+            <td><input type="password" placeholder="Update Password" id="password-${user.id}"></td>
+            <td>
+                <select id="role-${user.id}">
+                    <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
+                    <option value="staff" ${user.role === 'staff' ? 'selected' : ''}>Staff</option>
+                </select>
+            </td>
+            <td>
+                <button class="update-btn" onclick="updateUser(${user.id})">Update</button>
+                <button class="delete-btn" onclick="deleteUser(${user.id})">Delete</button>
+            </td>
+        `;
+
+        usersTbody.appendChild(tr);
+    });
+}
+
+
+// ================= UPDATE =================
+async function updateUser(id) {
+
+    const name = document.getElementById("name-" + id).value;
+    const email = document.getElementById("email-" + id).value;
+    const password = document.getElementById("password-" + id).value;
+    const role = document.getElementById("role-" + id).value;
+
+    let body = { name, email, role };
+
+    if (password) {
+        body.password = password;
+    }
+
+    await fetch(apiUrl + "/" + id, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify(body)
+    });
+
+    loadUsers();
+}
+
+
+// ================= DELETE =================
+async function deleteUser(id) {
+
+    if (!confirm("Are you sure?")) return;
+
+    await fetch(apiUrl + "/" + id, {
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    loadUsers();
+}
+
+
+// INIT
+loadUsers();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+<link rel="stylesheet" href="../../Css/StaffDashboard.css">
+<style>
+    /* =============================================
+   INVOICE PAGE - DETAILED CSS (NO SIDEBAR)
+   White & Dark Maroon Theme | Dashboard Content Only
+   Fully Responsive | Print-Ready
+   ============================================= */
+
+/* ---------- OVERRIDE / RESET FOR DASHBOARD CONTENT ---------- */
+.dashboard-content {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #fefcf8 0%, #f8f5f2 100%);
+    min-height: 100vh;
+    padding: 2rem;
+    color: #1e293b;
+}
+
+/* ---------- INVOICE BOX (CARD) ---------- */
+.box {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 32px;
+    box-shadow: 0 20px 40px -12px rgba(94, 11, 21, 0.12);
+    padding: 2rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid rgba(122, 28, 44, 0.08);
+}
+
+.box:hover {
+    box-shadow: 0 24px 48px -16px rgba(94, 11, 21, 0.18);
+}
+
+/* ---------- HEADER ---------- */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #d9b4b9;
+}
+
+.header h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #5E0B15;
+    letter-spacing: -0.5px;
+    position: relative;
+    display: inline-block;
+    margin: 0;
+}
+
+.header h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, #7A1C2C, #9E2A3B);
+    border-radius: 3px;
+}
+
+.header > div {
+    text-align: right;
+}
+
+.header p:first-of-type {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: #7A1C2C;
+    margin-bottom: 0.2rem;
+}
+
+.header p:last-of-type {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+/* ---------- CUSTOMER INFO SECTION ---------- */
+.info {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    background: #fef5f3;
+    padding: 1.2rem 1.5rem;
+    border-radius: 24px;
+    margin-bottom: 2rem;
+}
+
+.info-block {
+    flex: 1;
+    min-width: 180px;
+}
+
+.info-block h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #5E0B15;
+    margin-bottom: 0.6rem;
+    border-left: 3px solid #7A1C2C;
+    padding-left: 0.6rem;
+}
+
+.info-block p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #1e293b;
+    margin-bottom: 0.2rem;
+}
+
+.info-block p strong {
+    color: #5E0B15;
+}
+
+/* ---------- TABLE STYLES ---------- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+}
+
+th {
+    text-align: left;
+    padding: 1rem 0.75rem;
+    background: #5E0B15;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+th:first-child {
+    border-top-left-radius: 20px;
+    padding-left: 1.2rem;
+}
+
+th:last-child {
+    border-top-right-radius: 20px;
+    padding-right: 1.2rem;
+}
+
+td {
+    padding: 0.9rem 0.75rem;
+    border-bottom: 1px solid #ede7e6;
+    font-size: 0.9rem;
+    color: #1e293b;
+}
+
+td:first-child {
+    padding-left: 1.2rem;
+    font-weight: 500;
+}
+
+td:last-child {
+    padding-right: 1.2rem;
+    font-weight: 600;
+    color: #7A1C2C;
+}
+
+tbody tr:nth-child(even) {
+    background: #fef5f3;
+}
+
+/* ---------- SUMMARY SECTION ---------- */
+.summary {
+    background: #f8f7f5;
+    border-radius: 24px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0 1.5rem;
+    text-align: right;
+    border: 1px solid #ede7e6;
+}
+
+.summary p {
+    display: flex;
+    justify-content: flex-end;
+    gap: 2rem;
+    font-size: 0.95rem;
+    margin-bottom: 0.6rem;
+    padding: 0.3rem 0;
+}
+
+.summary p span:first-child {
+    font-weight: 500;
+    color: #64748b;
+    min-width: 120px;
+    text-align: left;
+}
+
+.summary p span:last-child {
+    font-weight: 600;
+    color: #1e293b;
+    min-width: 100px;
+    text-align: right;
+}
+
+.summary .grand {
+    border-top: 2px solid #d9b4b9;
+    margin-top: 0.5rem;
+    padding-top: 0.7rem;
+    font-size: 1.1rem;
+}
+
+.summary .grand span:first-child {
+    font-weight: 800;
+    color: #5E0B15;
+}
+
+.summary .grand span:last-child {
+    font-weight: 800;
+    color: #7A1C2C;
+    font-size: 1.2rem;
+}
+
+/* ---------- PRINT BUTTON ---------- */
+.actions {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.actions button {
+    background: #7A1C2C;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 44px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(94, 11, 21, 0.2);
+}
+
+.actions button:hover {
+    background: #5E0B15;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(94, 11, 21, 0.25);
+}
+
+.actions button:active {
+    transform: translateY(1px);
+}
+
+/* ---------- PRINT OPTIMIZATION ---------- */
+@media print {
+    .dashboard-content {
+        padding: 0;
+        background: white;
+    }
+    .box {
+        box-shadow: none;
+        padding: 0.5rem;
+        border: none;
+    }
+    .actions {
+        display: none;
+    }
+    .header {
+        border-bottom: 1px solid #ccc;
+    }
+    .info {
+        background: #f9f9f9;
+        border: 1px solid #eee;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    th {
+        background: #f1f1f1;
+        color: black;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .summary {
+        background: #fafafa;
+        border: 1px solid #ddd;
+    }
+}
+
+/* ---------- RESPONSIVE (MOBILE) ---------- */
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 1rem;
+    }
+    .box {
+        padding: 1.2rem;
+    }
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .header > div {
+        text-align: left;
+    }
+    .info {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .info-block:last-child {
+        text-align: left;
+    }
+    /* Convert table to cards */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    thead {
+        display: none;
+    }
+    tbody tr {
+        margin-bottom: 1rem;
+        border: 1px solid #ede7e6;
+        border-radius: 20px;
+        padding: 0.5rem;
+        background: white;
+    }
+    td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 0.8rem;
+        border-bottom: 1px dashed #ede7e6;
+        gap: 1rem;
+    }
+    td:last-child {
+        border-bottom: none;
+    }
+    td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: #5E0B15;
+        width: 100px;
+        flex-shrink: 0;
+        font-size: 0.8rem;
+    }
+    td:nth-child(1)::before { content: "Product"; }
+    td:nth-child(2)::before { content: "Qty"; }
+    td:nth-child(3)::before { content: "Price"; }
+    td:nth-child(4)::before { content: "Total"; }
+    .summary p {
+        justify-content: space-between;
+        gap: 1rem;
+    }
+    .summary p span:first-child {
+        text-align: left;
+    }
+}
+
+@media (max-width: 480px) {
+    .box {
+        padding: 1rem;
+    }
+    .header h2 {
+        font-size: 1.6rem;
+    }
+}
+
+/* ---------- ANIMATION ---------- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.box {
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* ========== END OF INVOICE CSS ========== */
+</style>
+</head>
+
+<body>
+ <div class="main-admin-dashboard">
+        
+        <!-- Sidebar containing navigation links for admin modules -->
+        <!-- <div class="side-bar">
+            <h1>Admin Dashboard</h1>
+
+            <div class="pages-links">
+                <ul>
+                    <a href="./StaffDashboard.html"><li>Home</li></a>
+                    <a href="./Pages/New Sale.html"><li>New Sale</li></a>
+                    <a href="./Pages/Products.html"><li>Products</li></a>
+                    <a href="./Pages/Inventory.html"><li>Inventory</li></a>
+
+                    
+
+                </ul>
+            </div>
+        </div> -->
+        
+        <!-- Main content area where dynamic data and statistics will be displayed -->
+        <div class="dashboard-content">
+            
+<div class="box">
+    <div class="header">
+        <h2>INVOICE</h2>
+        <div style="text-align: right">
+            <p style="font-weight: bold; color: var(--primary)">PMS</p>
+            <p style="font-size: 12px; color: #7f8c8d">Paint Managment System</p>
+        </div>
+    </div>
+
+    <div class="info" id="customer"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody id="items"></tbody>
+    </table>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="actions">
+        <button onclick="window.print()">Print Invoice</button>
+    </div>
+
+</div>
+
+            
+        </div>
+        
+    </div>
+<script>
+
+let data = JSON.parse(sessionStorage.getItem("invoice_data"));
+
+if (!data) {
+    document.body.innerHTML = "<h2>No Invoice Data Found</h2>";
+}
+else {
+
+    // 👤 CUSTOMER
+    document.getElementById("customer").innerHTML = `
+        <div class="info-block">
+            <h3>Bill To</h3>
+            <p><strong>${data.name || "Walk-in Customer"}</strong></p>
+            <p>${data.phone || ""}</p>
+            <p>${data.address || ""}</p>
+        </div>
+        <div class="info-block" style="text-align: right">
+            <h3>Invoice Details</h3>
+            <p><b>Sale ID:</b> #${data.sale_id || "N/A"}</p>
+            <p><b>Date:</b> ${data.sale_date || "N/A"}</p>
+            <p><b>Status:</b> <span style="text-transform:uppercase; color:var(--primary)">${data.payment_status || "N/A"}</span></p>
+        </div>
+    `;
+
+    // 🛒 ITEMS
+    let html = "";
+
+    data.items.forEach(item => {
+
+        let t = item.quantity * item.price;
+
+        html += `
+            <tr>
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>${item.price}</td>
+                <td>${t.toFixed(2)}</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("items").innerHTML = html;
+
+    // 💰 SUMMARY
+    document.getElementById("summary").innerHTML = `
+        <p><span>Subtotal:</span> <span>$${data.subtotal.toFixed(2)}</span></p>
+        <p><span>Discount (${data.discount}%):</span> <span>-$${data.discount_amount.toFixed(2)}</span></p>
+        <p class="grand"><span>Total:</span> <span>$${data.total.toFixed(2)}</span></p>
+    `;
+}
+
+</script>
+
+</body>
+</html>

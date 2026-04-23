@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products Admin</title>
+<link rel="stylesheet" href="../../Css/Admin dashboard.css">
+<link rel="stylesheet" href="../../Css/Pages/Products.css">
+
+</head>
+<body>
+
+<div class="main-admin-dashboard">
+    <div class="side-bar">
+        <h1>Admin Dashboard</h1>
+      <div class="pages-links">
+                <ul>
+                    <a href="../Admin dashboard.html"><li>Home</li></a>
+                    <a href="./Add Staff.html"><li>Add Staff</li></a>
+                    <a href="./Brands.html"><li>Brands</li></a>
+                    <a href="./Categories.html"><li>Categories</li></a>
+                    <a href="./Customers.html"><li>Customers</li></a>
+                    <a href="./inventory.html"><li>Inventory</li></a>
+                    <a href="./Products.html"><li>Products</li></a>
+                    <a href="./Purchase.html"><li>Purchase</li></a>
+                    <a href="./purchase_items.html"><li>Purchase Items</li></a>
+                    <a href="./Sales.html"><li>Sales</li></a>
+                    <a href="./SaleItem.html"><li>Sale Items</li></a>
+                    <a href="./Suppliers.html"><li>Suppliers</li></a>
+                    <a href="./Reports.html"><li>Reports</li></a>
+                    
+
+                </ul>
+            </div>
+    </div>
+<div class="dashboard-content">
+    <h2>Products</h2>
+
+    <!-- PRODUCT FORM -->
+    <form id="product-form" enctype="multipart/form-data">
+
+        <input type="text" id="product-name" placeholder="Product Name" required>
+
+        <input type="number" id="product-price" placeholder="Price" required>
+
+        <input type="number" id="product-stock" placeholder="Stock" required>
+
+        <input type="text" id="product-size" placeholder="Size">
+
+        <select id="product-category" required>
+            <option value="">Select Category</option>
+        </select>
+
+        <select id="product-brand" required>
+            <option value="">Select Brand</option>
+        </select>
+
+        <input type="file" id="product-image">
+
+        <input type="hidden" id="product-id">
+
+        <button type="submit" id="form-btn">Add Product</button>
+        <button type="button" id="cancel-btn" style="display:none;">Cancel</button>
+    </form>
+
+    <!-- PRODUCTS GRID -->
+    <div id="products-grid" class="products-grid"></div>
+</div>
+</div>
+<script>
+const API_PRODUCTS = 'http://localhost:8000/api/products';
+const API_CATEGORIES = 'http://localhost:8000/api/categories';
+const API_BRANDS = 'http://localhost:8000/api/brands';
+
+const gridContainer = document.getElementById('products-grid');
+const form = document.getElementById('product-form');
+
+const nameInput = document.getElementById('product-name');
+const priceInput = document.getElementById('product-price');
+const sizeInput = document.getElementById('product-size');
+const stockInput = document.getElementById('product-stock');
+
+const categorySelect = document.getElementById('product-category');
+const brandSelect = document.getElementById('product-brand');
+
+const imageInput = document.getElementById('product-image');
+const formBtn = document.getElementById('form-btn');
+const cancelBtn = document.getElementById('cancel-btn');
+
+let editId = null;
+
+/* ---------------- SAFE API PARSE ---------------- */
+function parseData(json) {
+    return Array.isArray(json) ? json : (json.data || []);
+}
+
+/* ---------------- CATEGORIES ---------------- */
+async function fetchCategories() {
+    try {
+        const res = await fetch(API_CATEGORIES);
+        const json = await res.json();
+        const data = parseData(json);
+
+        categorySelect.innerHTML = '<option value="">Select Category</option>';
+
+        data.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            categorySelect.appendChild(option);
+        });
+
+    } catch (err) {
+        console.log("Category error", err);
+        categorySelect.innerHTML = '<option>Error loading categories</option>';
+    }
+}
+
+/* ---------------- BRANDS ---------------- */
+async function fetchBrands() {
+    try {
+        const res = await fetch(API_BRANDS);
+        const json = await res.json();
+        const data = parseData(json);
+
+        brandSelect.innerHTML = '<option value="">Select Brand</option>';
+
+        data.forEach(brand => {
+            const option = document.createElement('option');
+            option.value = brand.id;
+            option.textContent = brand.name;
+            brandSelect.appendChild(option);
+        });
+
+    } catch (err) {
+        console.log("Brand error", err);
+        brandSelect.innerHTML = '<option>Error loading brands</option>';
+    }
+}
+
+/* ---------------- PRODUCTS ---------------- */
+async function fetchProducts() {
+    try {
+        const res = await fetch(API_PRODUCTS);
+        const data = await res.json();
+
+        gridContainer.innerHTML = '';
+
+        data.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+
+            card.innerHTML = `
+                <img src="${p.image ? 'http://localhost:8000/storage/' + p.image : 'placeholder.png'}">
+                <h3>${p.name}</h3>
+
+                <p>Category: ${p.category?.name || '-'}</p>
+                <p>Brand: ${p.brand?.name || '-'}</p>
+                <p>Size: ${p.size || '-'}</p>
+                <p><b>Stock:</b> ${p.stock ?? 0}</p>
+                <p>Price: $${p.price}</p>
+            `;
+
+            const editBtn = document.createElement('button');
+            editBtn.textContent = "Edit";
+            editBtn.onclick = () => editProduct(p);
+
+            const delBtn = document.createElement('button');
+            delBtn.textContent = "Delete";
+            delBtn.onclick = () => deleteProduct(p.id);
+
+            card.appendChild(editBtn);
+            card.appendChild(delBtn);
+
+            gridContainer.appendChild(card);
+        });
+
+    } catch (err) {
+        console.log(err);
+        gridContainer.innerHTML = '<p>Failed to load products</p>';
+    }
+}
+
+/* ---------------- ADD / UPDATE ---------------- */
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('name', nameInput.value);
+    formData.append('price', priceInput.value);
+    formData.append('size', sizeInput.value);
+    formData.append('stock', stockInput.value);
+    formData.append('category_id', categorySelect.value);
+    formData.append('brand_id', brandSelect.value);
+
+    if (imageInput.files[0]) {
+        formData.append('image', imageInput.files[0]);
+    }
+
+    let url = API_PRODUCTS;
+
+    if (editId) {
+        url = `${API_PRODUCTS}/${editId}`;
+        formData.append('_method', 'POST'); // Laravel safe update
+    }
+
+    const res = await fetch(url, {
+        method: 'POST',
+        body: formData
+    });
+
+    if (!res.ok) {
+        const err = await res.text();
+        console.log(err);
+        alert("Error saving product");
+        return;
+    }
+
+    resetForm();
+    fetchProducts();
+});
+
+/* ---------------- EDIT ---------------- */
+function editProduct(p) {
+    editId = p.id;
+
+    nameInput.value = p.name;
+    priceInput.value = p.price;
+    sizeInput.value = p.size || '';
+    stockInput.value = p.stock || 0;
+
+    categorySelect.value = p.category_id;
+    brandSelect.value = p.brand_id;
+
+    formBtn.textContent = "Update Product";
+    cancelBtn.style.display = "inline";
+}
+
+/* ---------------- DELETE ---------------- */
+async function deleteProduct(id) {
+    await fetch(`${API_PRODUCTS}/${id}`, {
+        method: 'DELETE'
+    });
+
+    fetchProducts();
+}
+
+/* ---------------- RESET ---------------- */
+function resetForm() {
+    form.reset();
+    editId = null;
+    formBtn.textContent = "Add Product";
+    cancelBtn.style.display = "none";
+}
+
+cancelBtn.onclick = resetForm;
+
+/* ---------------- INIT ---------------- */
+window.addEventListener('DOMContentLoaded', () => {
+    fetchCategories();
+    fetchBrands();
+    fetchProducts();
+});
+</script>
+</body>
+</html>

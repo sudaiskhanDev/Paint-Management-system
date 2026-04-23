@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Css/Admin dashboard.css">
+    <link rel="stylesheet" href="../../Css/Pages/Customers.css">
+    <title>Document</title>
+
+   
+</head>
+<body>
+     <div class="main-admin-dashboard">
+        
+        <div class="side-bar">
+            <h1>Admin Dashboardddd</h1>
+
+             <div class="pages-links">
+                <ul>
+                    <a href="../Admin dashboard.html"><li>Home</li></a>
+                    <a href="./Add Staff.html"><li>Add Staff</li></a>
+                    <a href="./Brands.html"><li>Brands</li></a>
+                    <a href="./Categories.html"><li>Categories</li></a>
+                    <a href="./Customers.html"><li>Customers</li></a>
+                    <a href="./inventory.html"><li>Inventory</li></a>
+                    <a href="./Products.html"><li>Products</li></a>
+                    <a href="./Purchase.html"><li>Purchase</li></a>
+                    <a href="./purchase_items.html"><li>Purchase Items</li></a>
+                    <a href="./Sales.html"><li>Sales</li></a>
+                    <a href="./SaleItem.html"><li>Sale Items</li></a>
+                    <a href="./Suppliers.html"><li>Suppliers</li></a>
+                    <a href="./Reports.html"><li>Reports</li></a>
+                    
+
+                </ul>
+            </div>
+        </div>
+        
+      <div class="dashboard-content">
+    <h2>Customers</h2>
+
+    <form id="customer-form">
+        <input type="text" id="customer-name" placeholder="Customer Name" required>
+        <input type="text" id="customer-phone" placeholder="Phone Number" required>
+        <input type="text" id="customer-address" placeholder="Address" required>
+        <input type="hidden" id="customer-id">
+        <button type="submit" id="form-btn">Add Customer</button>
+        <button type="button" id="cancel-btn" style="display:none;">Cancel</button>
+    </form>
+
+    <table id="customers-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+        
+    </div>
+
+    <!-- Toast + Confirm -->
+    <div id="toast-container"></div>
+
+    <div id="confirm-box">
+        <div>
+            <p>Are you sure?</p>
+            <button onclick="confirmDelete()">Yes</button>
+            <button onclick="closeConfirm()">No</button>
+        </div>
+    </div>
+<script>
+const API_URL = 'http://localhost:8000/api/customers';
+
+const tableBody = document.querySelector('#customers-table tbody');
+const form = document.getElementById('customer-form');
+const nameInput = document.getElementById('customer-name');
+const phoneInput = document.getElementById('customer-phone');
+const addressInput = document.getElementById('customer-address');
+const customerIdInput = document.getElementById('customer-id');
+const formBtn = document.getElementById('form-btn');
+const cancelBtn = document.getElementById('cancel-btn');
+
+let deleteId = null;
+
+/* Toast */
+function showToast(message, type='success') {
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.innerText = message;
+    document.getElementById('toast-container').appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+/* FETCH */
+async function fetchCustomers() {
+    try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+
+        if(!res.ok || !data.success) {
+            throw new Error(data.message || 'Failed to load');
+        }
+
+        tableBody.innerHTML = data.data.map(cust => `
+            <tr>
+                <td>${cust.id}</td>
+                <td>${cust.name}</td>
+                <td>${cust.phone}</td>
+                <td>${cust.address}</td>
+                <td>${new Date(cust.created_at).toLocaleString()}</td>
+                <td>
+                    <button onclick="editCustomer(${cust.id}, ${JSON.stringify(cust.name)}, ${JSON.stringify(cust.phone)}, ${JSON.stringify(cust.address)})">Edit</button>
+                    <button onclick="deleteCustomer(${cust.id})">Delete</button>
+                </td>
+            </tr>
+        `).join('');
+
+    } catch(err) {
+        console.error(err);
+        showToast('Failed to load customers','error');
+    }
+}
+
+/* ADD / UPDATE */
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const id = customerIdInput.value;
+
+    const payload = {
+        name: nameInput.value.trim(),
+        phone: phoneInput.value.trim(),
+        address: addressInput.value.trim()
+    };
+
+    try {
+        const res = await fetch(id ? `${API_URL}/${id}` : API_URL, {
+            method: id ? 'PUT' : 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if(!res.ok || !data.success){
+            throw new Error(data.message || Object.values(data.errors || {})[0]);
+        }
+
+        showToast(data.message, 'success');
+        resetForm();
+        fetchCustomers();
+
+    } catch(err) {
+        console.error(err);
+        showToast(err.message, 'error');
+    }
+});
+
+/* EDIT */
+function editCustomer(id, name, phone, address) {
+    nameInput.value = name;
+    phoneInput.value = phone;
+    addressInput.value = address;
+    customerIdInput.value = id;
+
+    formBtn.textContent = 'Update Customer';
+    cancelBtn.style.display = 'inline';
+}
+
+/* RESET */
+function resetForm() {
+    nameInput.value = '';
+    phoneInput.value = '';
+    addressInput.value = '';
+    customerIdInput.value = '';
+
+    formBtn.textContent = 'Add Customer';
+    cancelBtn.style.display = 'none';
+}
+
+cancelBtn.addEventListener('click', resetForm);
+
+/* DELETE */
+function deleteCustomer(id) {
+    deleteId = id;
+    document.getElementById('confirm-box').style.display = 'flex';
+}
+
+function closeConfirm(){
+    deleteId = null;
+    document.getElementById('confirm-box').style.display = 'none';
+}
+
+async function confirmDelete(){
+    try {
+        const res = await fetch(`${API_URL}/${deleteId}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if(!res.ok || !data.success){
+            throw new Error(data.message || 'Delete failed');
+        }
+
+        showToast(data.message, 'success');
+        fetchCustomers();
+        closeConfirm();
+
+    } catch(err) {
+        console.error('DELETE ERROR:', err);
+        showToast(err.message, 'error');
+        closeConfirm();
+    }
+}
+
+/* INIT */
+window.addEventListener('DOMContentLoaded', fetchCustomers);
+</script>
+</body>
+</html>

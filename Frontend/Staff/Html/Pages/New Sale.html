@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sale System (with Product Search & Images)</title>
+    <link rel="stylesheet" href="../../Css/StaffDashboard.css">
+    <link rel="stylesheet" href="../../Css/Pages/New Sale.css">
+
+
+ 
+</head>
+<body>
+<div class="main-admin-dashboard">
+    <!-- Sidebar (unchanged) -->
+    <div class="side-bar">
+        <h1>Admin Dashboard</h1>
+        <div class="pages-links">
+            <ul>
+                <a href="../StaffDashboard.html"><li>Home</li></a>
+                <a href="./New Sale.html"><li>New Sale</li></a>
+                <a href="./Products.html"><li>Products</li></a>
+                <a href="./Inventory.html"><li>Inventory</li></a>
+                <a href="./Report.html"><li>Report</li></a>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="dashboard-content">
+        <div class="container">
+            <h2>Create Sale</h2>
+
+            <!-- 👤 CUSTOMER -->
+            <label>Existing Customer</label>
+            <select id="customer_id">
+                <option value="">Select Customer</option>
+            </select>
+
+            <p>OR</p>
+
+            <div class="row">
+                <input type="text" id="new_customer_name" placeholder="New Customer Name">
+                <input type="text" id="new_customer_phone" placeholder="Phone">
+                <input type="text" id="new_customer_address" placeholder="Address">
+            </div>
+
+            <hr>
+
+            <!-- 🎨 PRODUCT with searchable image dropdown -->
+            <div class="row">
+                <div class="custom-product-dropdown" id="productCustomDropdown">
+                    <div class="dropdown-selected" id="dropdownSelected">
+                        <img id="selectedProductImg" src="../../Assets/default-product.png" alt="product">
+                        <span class="selected-text" id="selectedProductText">-- Select Product --</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </div>
+                    <div class="dropdown-list" id="dropdownList">
+                        <!-- Search input will be injected here -->
+                        <input type="text" id="productSearchInput" class="product-search" placeholder="🔍 Search product..." autocomplete="off">
+                        <div id="dropdownItemsContainer" class="dropdown-items-container"></div>
+                    </div>
+                </div>
+                <input type="hidden" id="selected_product_id" value="">
+                <input type="number" id="quantity" value="1" min="1" placeholder="Quantity">
+                <input type="number" id="price" readonly placeholder="Price">
+            </div>
+
+            <button class="btn-add" onclick="addToCart()">➕ Add Item</button>
+
+            <hr>
+
+            <ul id="cartList"></ul>
+
+            <div class="total-section">
+                <h3>Total: <span id="total">0</span></h3>
+                <div class="row" style="justify-content: flex-end;">
+                    <div style="width: 200px;">
+                        <label>Discount (%)</label>
+                        <input type="number" id="discount" value="0" oninput="calculateTotal()">
+                    </div>
+                </div>
+            </div>
+
+            <br><br>
+
+            <div class="row">
+                <div>
+                    <label>Payment Status</label>
+                    <select id="payment_status">
+                        <option value="pending">Pending</option>
+                        <option value="paid">Paid</option>
+                        <option value="partial">Partial</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Sale Date</label>
+                    <input type="date" id="sale_date">
+                </div>
+            </div>
+
+            <br><br>
+            <button class="btn-submit" onclick="submitSale()">Submit Sale</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API = "http://127.0.0.1:8000/api";
+    let products = [];
+    let cart = [];
+    let currentProductId = "";
+
+    const DEFAULT_IMAGE = "../../Assets/default-product.png";
+
+    // Helper: get full image URL from product object
+    function getProductImageUrl(product) {
+        if (!product) return DEFAULT_IMAGE;
+        if (product.image_url && product.image_url.startsWith('http')) return product.image_url;
+        if (product.image) {
+            if (product.image.startsWith('http')) return product.image;
+            if (product.image.startsWith('storage/')) return `http://127.0.0.1:8000/${product.image}`;
+            return `http://127.0.0.1:8000/storage/${product.image}`;
+        }
+        return DEFAULT_IMAGE;
+    }
+
+    // Load customers
+    function loadCustomers() {
+        fetch(`${API}/customers`)
+            .then(res => res.json())
+            .then(res => {
+                let html = `<option value="">Select Customer</option>`;
+                (res.data || []).forEach(c => {
+                    html += `<option value="${c.id}">${c.name} (${c.phone})</option>`;
+                });
+                document.getElementById('customer_id').innerHTML = html;
+            })
+            .catch(err => console.error("Customers error:", err));
+    }
+
+    // Load products and build dropdown (with search)
+    function loadProducts() {
+        fetch(`${API}/products`)
+            .then(res => res.json())
+            .then(data => {
+                products = data;
+                buildProductDropdown(""); // initial no filter
+            })
+            .catch(err => console.error("Products error:", err));
+    }
+
+    // Filter and rebuild dropdown items based on search term
+    function filterProducts(searchTerm) {
+        buildProductDropdown(searchTerm);
+    }
+
+    function buildProductDropdown(filterText = "") {
+        const container = document.getElementById("dropdownItemsContainer");
+        if (!container) return;
+        container.innerHTML = "";
+
+        // Filter products (case-insensitive)
+        const filtered = products.filter(p => 
+            p.name.toLowerCase().includes(filterText.toLowerCase())
+        );
+
+        // If no products match, show a message
+        if (filtered.length === 0) {
+            const noResult = document.createElement("div");
+            noResult.className = "dropdown-item";
+            noResult.style.justifyContent = "center";
+            noResult.style.color = "#64748b";
+            noResult.innerHTML = `<span>❌ No products found</span>`;
+            container.appendChild(noResult);
+            return;
+        }
+
+        // Add each product
+        filtered.forEach(prod => {
+            const imgUrl = getProductImageUrl(prod);
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "dropdown-item";
+            itemDiv.innerHTML = `
+                <img src="${imgUrl}" alt="${escapeHtml(prod.name)}" onerror="this.src='${DEFAULT_IMAGE}'">
+                <div class="product-info">
+                    <div class="product-name">${escapeHtml(prod.name)}</div>
+                    <div class="product-price">$${parseFloat(prod.price).toFixed(2)}</div>
+                    <div class="product-stock">Stock: ${prod.stock ?? 0}</div>
+                </div>
+            `;
+            itemDiv.onclick = () => {
+                selectProduct(prod, prod.id, `${prod.name} - $${prod.price}`, imgUrl);
+                closeDropdown();
+                // Clear search input and rebuild full list for next open
+                const searchInput = document.getElementById("productSearchInput");
+                if (searchInput) searchInput.value = "";
+                buildProductDropdown("");
+            };
+            container.appendChild(itemDiv);
+        });
+    }
+
+    function selectProduct(productObj, prodId, displayText, imageUrl) {
+        currentProductId = prodId;
+        document.getElementById("selected_product_id").value = prodId;
+        document.getElementById("selectedProductImg").src = imageUrl || DEFAULT_IMAGE;
+        document.getElementById("selectedProductText").innerText = displayText || "-- Select Product --";
+        if (productObj) {
+            document.getElementById("price").value = productObj.price;
+            document.getElementById("quantity").max = productObj.stock || 0;
+        } else {
+            document.getElementById("price").value = "";
+        }
+    }
+
+    function toggleDropdown() {
+        const list = document.getElementById("dropdownList");
+        if (list) {
+            const isShowing = list.classList.contains("show");
+            if (!isShowing) {
+                // When opening, reset search and show full list
+                const searchInput = document.getElementById("productSearchInput");
+                if (searchInput) {
+                    searchInput.value = "";
+                    buildProductDropdown("");
+                }
+            }
+            list.classList.toggle("show");
+        }
+    }
+    function closeDropdown() {
+        const list = document.getElementById("dropdownList");
+        if (list) list.classList.remove("show");
+    }
+
+    // Add to cart
+    function addToCart() {
+        const productId = currentProductId;
+        const qty = parseInt(document.getElementById("quantity").value);
+        const price = parseFloat(document.getElementById("price").value);
+
+        if (!productId || qty <= 0) {
+            alert("Select a product and valid quantity");
+            return;
+        }
+
+        const product = products.find(p => p.id == productId);
+        if (!product) {
+            alert("Product not found");
+            return;
+        }
+
+        if (qty > product.stock) {
+            alert(`Not enough stock! Available: ${product.stock}`);
+            return;
+        }
+
+        const existing = cart.find(item => item.product_id == productId);
+        if (existing) {
+            const newQty = existing.quantity + qty;
+            if (newQty > product.stock) {
+                alert(`Total quantity exceeds stock! Available: ${product.stock}`);
+                return;
+            }
+            existing.quantity = newQty;
+        } else {
+            cart.push({
+                product_id: productId,
+                name: product.name,
+                quantity: qty,
+                price: price
+            });
+        }
+
+        renderCart();
+        document.getElementById("quantity").value = 1;
+        // Optionally keep product selected, but clear search/close dropdown
+        closeDropdown();
+    }
+
+    function renderCart() {
+        let html = "";
+        let total = 0;
+        cart.forEach((item, idx) => {
+            const subtotal = item.quantity * item.price;
+            total += subtotal;
+            html += `<li>
+                ${escapeHtml(item.name)} | Qty: ${item.quantity} | Total: $${subtotal.toFixed(2)}
+                <button class="btn-remove" onclick="removeItem(${idx})">✖ Remove</button>
+            </li>`;
+        });
+        document.getElementById("cartList").innerHTML = html;
+        calculateTotal();
+    }
+
+    function removeItem(index) {
+        cart.splice(index, 1);
+        renderCart();
+    }
+
+    function calculateTotal() {
+        let subtotal = 0;
+        cart.forEach(i => subtotal += i.quantity * i.price);
+        const discountPercent = parseFloat(document.getElementById("discount").value) || 0;
+        const finalTotal = subtotal - (subtotal * discountPercent / 100);
+        document.getElementById("total").innerText = finalTotal.toFixed(2);
+    }
+
+    function submitSale() {
+        if (cart.length === 0) {
+            alert("Cart is empty");
+            return;
+        }
+
+        const customerId = document.getElementById("customer_id").value;
+        const newName = document.getElementById("new_customer_name").value;
+        const newPhone = document.getElementById("new_customer_phone").value;
+        const newAddress = document.getElementById("new_customer_address").value;
+
+        let selectedOption = document.querySelector("#customer_id option:checked");
+        let selectedText = selectedOption ? selectedOption.text : "";
+        let customerName = "", customerPhone = "", customerAddress = "";
+
+        if (customerId) {
+            customerName = selectedText.split(" (")[0];
+            customerPhone = selectedText.includes("(") ? selectedText.split("(")[1].replace(")", "") : "";
+        } else {
+            customerName = newName;
+            customerPhone = newPhone;
+            customerAddress = newAddress;
+        }
+
+        let subtotal = 0;
+        cart.forEach(item => subtotal += item.quantity * item.price);
+        const discountPercent = parseFloat(document.getElementById("discount").value) || 0;
+        const discountAmount = (subtotal * discountPercent) / 100;
+        const total = subtotal - discountAmount;
+
+        const payload = {
+            customer_id: customerId || null,
+            new_customer_name: newName,
+            new_customer_phone: newPhone,
+            new_customer_address: newAddress,
+            payment_status: document.getElementById("payment_status").value,
+            sale_date: document.getElementById("sale_date").value,
+            items: cart,
+            subtotal: subtotal,
+            discount: discountPercent,
+            discount_amount: discountAmount,
+            total: total
+        };
+
+        fetch(`${API}/sales`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Sale response:", data);
+            const invoiceData = {
+                sale_id: data.sale_id || null,
+                name: customerName,
+                phone: customerPhone,
+                address: customerAddress,
+                payment_status: payload.payment_status,
+                sale_date: payload.sale_date,
+                items: cart,
+                subtotal: subtotal,
+                discount: discountPercent,
+                discount_amount: discountAmount,
+                total: total
+            };
+            sessionStorage.setItem("invoice_data", JSON.stringify(invoiceData));
+
+            // Reset form
+            cart = [];
+            renderCart();
+            document.getElementById("customer_id").value = "";
+            document.getElementById("new_customer_name").value = "";
+            document.getElementById("new_customer_phone").value = "";
+            document.getElementById("new_customer_address").value = "";
+            document.getElementById("discount").value = "0";
+            document.getElementById("payment_status").value = "pending";
+            document.getElementById("sale_date").value = "";
+            selectProduct(null, "", "-- Select Product --", DEFAULT_IMAGE);
+            document.getElementById("quantity").value = 1;
+            document.getElementById("price").value = "";
+
+            window.location.href = "invoice.html";
+        })
+        .catch(err => {
+            alert("Error: " + err.message);
+        });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Dropdown event binding and search listener
+    function bindDropdownEvents() {
+        const trigger = document.getElementById("dropdownSelected");
+        if (trigger) {
+            trigger.addEventListener("click", (e) => {
+                e.stopPropagation();
+                toggleDropdown();
+            });
+        }
+        document.addEventListener("click", function(e) {
+            const container = document.getElementById("productCustomDropdown");
+            if (container && !container.contains(e.target)) {
+                closeDropdown();
+            }
+        });
+        // Search input listener
+        const searchInput = document.getElementById("productSearchInput");
+        if (searchInput) {
+            searchInput.addEventListener("input", (e) => {
+                e.stopPropagation();
+                filterProducts(e.target.value);
+            });
+            // Prevent closing when clicking on search input
+            searchInput.addEventListener("click", (e) => e.stopPropagation());
+        }
+    }
+
+    window.onload = () => {
+        loadCustomers();
+        loadProducts();
+        bindDropdownEvents();
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById("sale_date").value = today;
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sales Item</title>
+    <link rel="stylesheet" href="../../Css/Admin dashboard.css">
+    <link rel="stylesheet" href="../../Css/Pages/SaleItem.css">
+</head>
+
+<body>
+<div class="main-admin-dashboard">
+        
+        <!-- Sidebar containing navigation links for admin modules -->
+        <div class="side-bar">
+            <h1>Admin Dashboard</h1>
+
+              <div class="pages-links">
+                <ul>
+                    <a href="../Admin dashboard.html"><li>Home</li></a>
+                    <a href="./Add Staff.html"><li>Add Staff</li></a>
+                    <a href="./Brands.html"><li>Brands</li></a>
+                    <a href="./Categories.html"><li>Categories</li></a>
+                    <a href="./Customers.html"><li>Customers</li></a>
+                    <a href="./inventory.html"><li>Inventory</li></a>
+                    <a href="./Products.html"><li>Products</li></a>
+                    <a href="./Purchase.html"><li>Purchase</li></a>
+                    <a href="./purchase_items.html"><li>Purchase Items</li></a>
+                    <a href="./Sales.html"><li>Sales</li></a>
+                    <a href="./SaleItem.html"><li>Sale Items</li></a>
+                    <a href="./Suppliers.html"><li>Suppliers</li></a>
+                    <a href="./Reports.html"><li>Reports</li></a>
+                    
+
+                </ul>
+            </div>
+        </div>
+        
+       <div class="dashboard-content">
+            
+        <h2>Sales Items List</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Sale ID</th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody id="table"></tbody>
+</table>
+
+           
+             
+        </div>
+        
+    </div>
+
+
+<script>
+
+const API = "http://127.0.0.1:8000/api/sale-items";
+
+async function loadData() {
+
+    try {
+
+        let res = await fetch(API);
+        let data = await res.json();
+
+        let items = data.data;
+
+        let html = "";
+
+        items.forEach(item => {
+
+            html += `
+                <tr>
+                    <td>${item.id}</td>
+                    <td>${item.sale_id}</td>
+                    <td>${item.sale?.customer?.name || '-'}</td>
+                    <td>${item.product?.name || '-'}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price}</td>
+                    <td>${(item.quantity * item.price).toFixed(2)}</td>
+                    <td>
+                        <button class="btn-delete" onclick="deleteItem(${item.id})">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        document.getElementById("table").innerHTML = html;
+
+    } catch (err) {
+        console.log("Error:", err);
+    }
+}
+
+// ================= DELETE FUNCTION =================
+async function deleteItem(id) {
+
+    if (!confirm("Are you sure you want to delete this item?")) {
+        return;
+    }
+
+    try {
+
+        let res = await fetch(`${API}/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        let data = await res.json();
+
+        alert("Deleted successfully!");
+
+        loadData(); // refresh table
+
+    } catch (err) {
+        console.log("Delete error:", err);
+        alert("Delete failed!");
+    }
+}
+
+// INIT
+loadData();
+
+</script>
+
+</body>
+</html>

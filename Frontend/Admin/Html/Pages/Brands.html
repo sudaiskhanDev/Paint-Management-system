@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Css/Admin dashboard.css">
+    <link rel="stylesheet" href="../../Css/Pages/Brands.css">
+    <title>Brands Management</title>
+</head>
+<body>
+    <div class="main-admin-dashboard">
+        <!-- Sidebar containing navigation links for admin modules -->
+        <div class="side-bar">
+            <h1>Admin Dashboard</h1>
+         <div class="pages-links">
+                <ul>
+                    <a href="../Admin dashboard.html"><li>Home</li></a>
+                    <a href="./Add Staff.html"><li>Add Staff</li></a>
+                    <a href="./Brands.html"><li>Brands</li></a>
+                    <a href="./Categories.html"><li>Categories</li></a>
+                    <a href="./Customers.html"><li>Customers</li></a>
+                    <a href="./inventory.html"><li>Inventory</li></a>
+                    <a href="./Products.html"><li>Products</li></a>
+                    <a href="./Purchase.html"><li>Purchase</li></a>
+                    <a href="./purchase_items.html"><li>Purchase Items</li></a>
+                    <a href="./Sales.html"><li>Sales</li></a>
+                    <a href="./SaleItem.html"><li>Sale Items</li></a>
+                    <a href="./Suppliers.html"><li>Suppliers</li></a>
+                    <a href="./Reports.html"><li>Reports</li></a>
+                    
+
+                </ul>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <h2>Brands Management</h2>
+
+            <!-- ➕ Add Brand -->
+            <div>
+                <input type="text" id="brandName" placeholder="Enter brand name">
+                <button id="addBrandBtn">Add Brand</button>
+            </div>
+
+            <br>
+
+            <!-- 📋 Brands Table -->
+            <table border="1" width="100%" id="brandsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data yahan load hoga -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- JS logic alag file me include karen -->
+    <script>
+    const API_URL = "http://127.0.0.1:8000/api/brands";
+
+// 🔹 Load all brands
+async function loadBrands() {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+
+    let rows = "";
+    data.data.forEach(brand => {
+        rows += `
+            <tr id="brand-row-${brand.id}">
+                <td>${brand.id}</td>
+                <td class="brand-name">${brand.name}</td>
+                <td>
+                    <button onclick="startEdit(${brand.id})">Edit</button>
+                    <button onclick="deleteBrand(${brand.id})">Delete</button>
+                </td>
+            </tr>
+        `;
+    });
+
+    document.querySelector("#brandsTable tbody").innerHTML = rows;
+}
+
+// 🔹 Add brand
+async function addBrand() {
+    let name = document.getElementById("brandName").value;
+    if (!name) return alert("Name required");
+
+    await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name })
+    });
+
+    document.getElementById("brandName").value = "";
+    loadBrands();
+}
+
+// 🔹 Delete brand
+async function deleteBrand(id) {
+    if (!confirm("Are you sure?")) return;
+
+    await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+    loadBrands();
+}
+
+// 🔹 Start inline edit
+function startEdit(id) {
+    const row = document.getElementById(`brand-row-${id}`);
+    const nameCell = row.querySelector(".brand-name");
+    const oldName = nameCell.textContent;
+
+    // Replace cell content with input + update button
+    nameCell.innerHTML = `
+        <input type="text" id="edit-name-${id}" value="${oldName}">
+        <button onclick="updateBrand(${id})">Update</button>
+        <button onclick="cancelEdit(${id}, '${oldName}')">Cancel</button>
+    `;
+}
+
+// 🔹 Cancel edit
+function cancelEdit(id, oldName) {
+    const row = document.getElementById(`brand-row-${id}`);
+    const nameCell = row.querySelector(".brand-name");
+    nameCell.textContent = oldName;
+}
+
+// 🔹 Update brand inline
+async function updateBrand(id) {
+    const newName = document.getElementById(`edit-name-${id}`).value;
+    if (!newName) return alert("Name required");
+
+    await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newName })
+    });
+
+    loadBrands();
+}
+
+// 🔹 Event listener for Add Brand button
+document.getElementById("addBrandBtn").addEventListener("click", addBrand);
+
+// 🔹 Load brands on page load
+window.onload = loadBrands;</script>
+</body>
+</html>

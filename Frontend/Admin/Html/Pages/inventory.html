@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory</title>
+
+    <link rel="stylesheet" href="../../Css/Admin dashboard.css">
+    <link rel="stylesheet" href="../../Css/Pages/Inventory.css">
+</head>
+
+<body>
+
+<div class="main-admin-dashboard">
+
+    <!-- SIDEBAR -->
+    <div class="side-bar">
+        <h1>Admin Dashboard</h1>
+       <div class="pages-links">
+                <ul>
+                    <a href="../Admin dashboard.html"><li>Home</li></a>
+                    <a href="./Add Staff.html"><li>Add Staff</li></a>
+                    <a href="./Brands.html"><li>Brands</li></a>
+                    <a href="./Categories.html"><li>Categories</li></a>
+                    <a href="./Customers.html"><li>Customers</li></a>
+                    <a href="./inventory.html"><li>Inventory</li></a>
+                    <a href="./Products.html"><li>Products</li></a>
+                    <a href="./Purchase.html"><li>Purchase</li></a>
+                    <a href="./purchase_items.html"><li>Purchase Items</li></a>
+                    <a href="./Sales.html"><li>Sales</li></a>
+                    <a href="./SaleItem.html"><li>Sale Items</li></a>
+                    <a href="./Suppliers.html"><li>Suppliers</li></a>
+                    <a href="./Reports.html"><li>Reports</li></a>
+                    
+
+                </ul>
+            </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="dashboard-content">
+
+        <h2>Inventory List</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+
+            <tbody id="table"></tbody>
+        </table>
+
+    </div>
+</div>
+
+<script>
+const API = "http://127.0.0.1:8000/api/inventory";
+
+async function loadInventory() {
+    try {
+        const res = await fetch(API);
+        const data = await res.json();
+
+        renderTable(data);
+
+    } catch (err) {
+        console.log("Error:", err);
+    }
+}
+function renderTable(data) {
+    const table = document.getElementById("table");
+    let rows = "";
+
+    data.forEach(item => {
+
+        let image = item.image
+            ? `http://127.0.0.1:8000/storage/${item.image}`
+            : "https://via.placeholder.com/60";
+
+        const stock = Number(item.stock);
+
+        let stockClass = "";
+        let stockLabel = stock;
+
+        if (stock === 0) {
+            stockClass = "out-stock";
+            stockLabel = "❌ Out (0)";
+        }
+        else if (stock <= 10) {
+            stockClass = "critical-stock";
+            stockLabel = `🔴 Critical (${stock})`;
+        }
+        else if (stock <= 30) {
+            stockClass = "low-stock";
+            stockLabel = `⚠ Low (${stock})`;
+        }
+        else {
+            stockClass = "";
+            stockLabel = stock;
+        }
+
+        rows += `
+            <tr>
+                <td>${item.product_id}</td>
+                <td>
+                    <img src="${image}" style="
+                        width:50px;
+                        height:50px;
+                        object-fit:cover;
+                        border-radius:8px;
+                        border:1px solid #ddd;
+                    ">
+                </td>
+                <td>${item.product_name}</td>
+                <td>${item.price}</td>
+                <td>
+                    <span class="${stockClass}">
+                        ${stockLabel}
+                    </span>
+                </td>
+            </tr>
+        `;
+    });
+
+    table.innerHTML = rows;
+}
+loadInventory();
+</script>
+
+</body>
+</html>

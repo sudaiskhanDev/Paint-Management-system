@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../../Css/StaffDashboard.css">
+<style>
+    /* =============================================
+   PRODUCTS PAGE - DETAILED CSS (NO SIDEBAR)
+   White & Dark Maroon Theme | Card Grid Layout
+   Fully Responsive | Modern Animations
+   ============================================= */
+
+/* ---------- GOOGLE FONTS ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+
+/* ---------- DASHBOARD CONTENT OVERRIDE ---------- */
+.dashboard-content {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #fefcf8 0%, #f8f5f2 100%);
+    min-height: 100vh;
+    padding: 2rem;
+    color: #1e293b;
+}
+
+/* ---------- HEADING ---------- */
+.dashboard-content h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #5E0B15;
+    margin-bottom: 1.8rem;
+    letter-spacing: -0.3px;
+    position: relative;
+    display: inline-block;
+}
+
+.dashboard-content h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #7A1C2C, #9E2A3B);
+    border-radius: 3px;
+}
+
+/* ---------- PRODUCT GRID CONTAINER ---------- */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+/* ---------- PRODUCT CARD ---------- */
+.card {
+    background: #ffffff;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 12px 24px -12px rgba(94, 11, 21, 0.1);
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    border: 1px solid rgba(122, 28, 44, 0.08);
+    display: flex;
+    flex-direction: column;
+    animation: fadeSlideUp 0.4s ease backwards;
+}
+
+.card:nth-child(1) { animation-delay: 0.02s; }
+.card:nth-child(2) { animation-delay: 0.05s; }
+.card:nth-child(3) { animation-delay: 0.08s; }
+.card:nth-child(4) { animation-delay: 0.11s; }
+.card:nth-child(5) { animation-delay: 0.14s; }
+.card:nth-child(6) { animation-delay: 0.17s; }
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 40px -12px rgba(94, 11, 21, 0.2);
+    border-color: #d9b4b9;
+}
+
+/* Product Image */
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+    background: #f1f5f9;
+}
+
+.card:hover .product-image {
+    transform: scale(1.02);
+}
+
+/* Product Title */
+.title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 1rem 1rem 0.3rem;
+    line-height: 1.3;
+}
+
+/* Price */
+.price {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #7A1C2C;
+    background: #fef5f3;
+    display: inline-block;
+    padding: 0.2rem 1rem;
+    border-radius: 40px;
+    margin: 0.5rem 1rem;
+    letter-spacing: -0.3px;
+}
+
+/* Meta Info (Category, Brand, Size) */
+.card p {
+    margin: 0.25rem 1rem;
+    font-size: 0.85rem;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card p::before {
+    content: "•";
+    color: #7A1C2C;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+/* Individual p spacing */
+.card .category {
+    margin-top: 0.2rem;
+}
+
+.card .size {
+    margin-bottom: 1rem;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 1rem;
+    }
+    .container {
+        gap: 1.2rem;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+    .title {
+        font-size: 1rem;
+    }
+    .price {
+        font-size: 1.2rem;
+    }
+    .product-image {
+        height: 170px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+    .dashboard-content h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* ---------- ANIMATIONS ---------- */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---------- LOADING / ERROR STATE ---------- */
+.container:empty::before {
+    content: "Loading products...";
+    display: block;
+    text-align: center;
+    padding: 3rem;
+    color: #7A1C2C;
+    font-weight: 500;
+    grid-column: 1 / -1;
+}
+
+.container:has(> .error)::before {
+    content: "Failed to load products";
+    display: block;
+    text-align: center;
+    padding: 3rem;
+    color: #dc2626;
+    background: #fee2e2;
+    border-radius: 24px;
+}
+
+/* ========== END OF PRODUCTS PAGE CSS ========== */
+</style>
+<title>Products</title>
+</head>
+<body>
+ <div class="main-admin-dashboard">
+        
+        <!-- Sidebar containing navigation links for admin modules -->
+        <div class="side-bar">
+            <h1>Admin Dashboard</h1>
+
+           <div class="pages-links">
+                <ul>
+                    <a href="../StaffDashboard.html"><li>Home</li></a>
+                    <a href="./New Sale.html"><li>New Sale</li></a>
+                    <a href="./Products.html"><li>Products</li></a>
+                    <a href="./Inventory.html"><li>Inventory</li></a>
+                    <a href="./Report.html"><li>Report</li></a>
+
+                    
+
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Main content area where dynamic data and statistics will be displayed -->
+        <div class="dashboard-content">
+            
+<h2>Products List</h2>
+
+<div class="container" id="products"></div>
+
+<!-- ✅ HTML structure yahan define -->
+<template id="product-template">
+  <div class="card">
+    <img class="product-image" src="" alt="product">
+    <div class="title"></div>
+    <div class="price"></div>
+    <p class="category"></p>
+    <p class="brand"></p>
+    <p class="size"></p>
+  </div>
+</template>
+
+            
+        </div>
+        
+    </div>
+<script>
+const API_URL = "http://127.0.0.1:8000/api/products";
+const IMAGE_BASE = "http://127.0.0.1:8000/storage/";
+
+fetch(API_URL)
+  .then(res => res.json())
+  .then(data => renderProducts(data))
+  .catch(err => showError());
+
+function renderProducts(products) {
+  const container = document.getElementById('products');
+  const template = document.getElementById('product-template');
+
+  container.innerHTML = "";
+
+  products.forEach(product => {
+    const clone = template.content.cloneNode(true);
+
+    // sirf data inject ho raha hai (logic)
+    clone.querySelector('.product-image').src =
+      product.image ? IMAGE_BASE + product.image : 'https://via.placeholder.com/300';
+
+    clone.querySelector('.title').textContent = product.name;
+    clone.querySelector('.price').textContent = "Price: " + product.price;
+    clone.querySelector('.category').textContent = "Category: " + (product.category?.name ?? 'N/A');
+    clone.querySelector('.brand').textContent = "Brand: " + (product.brand?.name ?? 'N/A');
+    clone.querySelector('.size').textContent = "Size: " + (product.size ?? 'N/A');
+
+    container.appendChild(clone);
+  });
+}
+
+function showError() {
+  document.getElementById('products').textContent = "Failed to load products";
+}
+</script>
+
+</body>
+</html>

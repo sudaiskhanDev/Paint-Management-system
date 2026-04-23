@@ -1,0 +1,634 @@
+/* =============================================
+   ADMIN DASHBOARD - COMPLETE CSS
+   White & Dark Maroon Theme | Sidebar + Navbar + KPI Cards + Tables + Quick Links
+   Fully Responsive | Modern Animations
+   ============================================= */
+
+/* ---------- GOOGLE FONTS ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+
+/* ---------- RESET & GLOBAL ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #f5f7fc;
+    color: #1e293b;
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+/* ============================================
+   COLOR VARIABLES (DARK MAROON + WHITE)
+   ============================================ */
+:root {
+    --maroon-dark: #5E0B15;
+    --maroon-primary: #7A1C2C;
+    --maroon-light: #9E2A3B;
+    --maroon-soft: #D9B4B9;
+    --white-pure: #FFFFFF;
+    --white-off: #FEFCF8;
+    --gray-light: #F8F7F5;
+    --gray-border: #EDE7E6;
+    --text-dark: #2C1810;
+    --shadow-sm: 0 8px 20px rgba(94, 11, 21, 0.08);
+    --shadow-md: 0 12px 28px rgba(94, 11, 21, 0.12);
+    --transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+
+/* ============================================
+   MAIN DASHBOARD LAYOUT (FLEX)
+   ============================================ */
+.main-admin-dashboard {
+    display: flex;
+    min-height: 100vh;
+    background: var(--gray-light);
+}
+
+/* ============================================
+   SIDEBAR - DARK MAROON THEME
+   ============================================ */
+.side-bar {
+    width: 280px;
+    background: linear-gradient(180deg, var(--maroon-dark) 0%, var(--maroon-primary) 100%);
+    color: var(--white-pure);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    transition: var(--transition);
+    z-index: 100;
+    overflow-y: auto;
+}
+
+/* Sidebar Scrollbar */
+.side-bar::-webkit-scrollbar {
+    width: 5px;
+}
+.side-bar::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+}
+.side-bar::-webkit-scrollbar-thumb {
+    background: var(--maroon-light);
+    border-radius: 10px;
+}
+
+/* Sidebar Heading */
+.side-bar h1 {
+    font-size: 1.7rem;
+    font-weight: 700;
+    padding: 2rem 1.5rem 1.2rem;
+    letter-spacing: -0.3px;
+    color: var(--white-pure);
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+    margin-bottom: 1.8rem;
+    position: relative;
+    background: linear-gradient(135deg, #fff, #FFD1D1);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Navigation Links Container */
+.pages-links {
+    flex: 1;
+    padding: 0 0.8rem 2rem;
+}
+
+.pages-links ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.pages-links ul a {
+    text-decoration: none;
+    display: block;
+    transition: var(--transition);
+}
+
+/* List Items */
+.pages-links ul li {
+    padding: 0.75rem 1.2rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #F5E6E8;
+    border-radius: 14px;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+}
+
+/* ===== ICONS FOR EACH LINK ===== */
+.pages-links ul a:nth-child(1) li::before { content: "🏠 "; font-size: 1.2rem; width: 28px; }
+.pages-links ul a:nth-child(2) li::before { content: "👤+ "; font-size: 1.2rem; width: 28px; }
+.pages-links ul a:nth-child(3) li::before { content: "🏷️ "; font-size: 1.2rem; width: 28px; }
+.pages-links ul a:nth-child(4) li::before { content: "📂 "; font-size: 1.2rem; width: 28px; }
+.pages-links ul a:nth-child(5) li::before { content: "👥 "; font-size: 1.2rem; width: 28px; }
+.pages-links ul a:nth-child(6) li::before { content: "📦 "; font-size: 1.2rem; width: 28px; }
+.pages-links ul a:nth-child(7) li::before { content: "🛍️ "; font-size: 1.2rem; width: 28px; }
+.pages-links ul a:nth-child(8) li::before { content: "🛒 "; font-size: 1.2rem; width: 28px; }
+.pages-links ul a:nth-child(9) li::before { content: "📋 "; font-size: 1.2rem; width: 28px; }
+.pages-links ul a:nth-child(10) li::before { content: "💰 "; font-size: 1.2rem; width: 28px; }
+.pages-links ul a:nth-child(11) li::before { content: "🧾 "; font-size: 1.2rem; width: 28px; }
+.pages-links ul a:nth-child(12) li::before { content: "🏭 "; font-size: 1.2rem; width: 28px; }
+.pages-links ul a:nth-child(13) li::before { content: "📊 "; font-size: 1.2rem; width: 28px; }
+
+/* Hover & Active States */
+.pages-links ul a:hover li {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--white-pure);
+    transform: translateX(6px);
+    backdrop-filter: blur(4px);
+}
+
+.pages-links ul a:active li {
+    transform: translateX(2px);
+}
+
+/* Active link (add class "active" to <a> for current page) */
+.pages-links ul a.active li,
+.pages-links ul li.active {
+    background: var(--white-pure);
+    color: var(--maroon-dark);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+}
+
+.pages-links ul a.active li::before,
+.pages-links ul li.active::before {
+    filter: brightness(0) saturate(100%) invert(15%) sepia(80%) saturate(2000%) hue-rotate(320deg);
+}
+
+/* ============================================
+   DASHBOARD CONTENT (WHITE THEME)
+   ============================================ */
+.dashboard-content {
+    flex: 1;
+    background: var(--white-off);
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+}
+
+/* ============================================
+   TOP NAVBAR (WHITE WITH MAROON ACCENTS)
+   ============================================ */
+.navbar {
+    background: var(--white-pure);
+    padding: 0.8rem 2rem;
+    border-radius: 0 0 24px 24px;
+    box-shadow: 0 2px 12px rgba(94, 11, 21, 0.06);
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--gray-border);
+}
+
+.navbar nav ul {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.navbar nav ul a {
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--maroon-dark);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.navbar nav ul a:hover {
+    color: var(--maroon-light);
+    transform: translateY(-1px);
+}
+
+/* PMS icon */
+.navbar nav ul a::before {
+    content: "📋";
+    font-size: 1.2rem;
+}
+
+/* Logout Button */
+#logoutBtn {
+    background: transparent;
+    border: 2px solid var(--maroon-primary);
+    padding: 0.5rem 1.6rem;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--maroon-primary);
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 2px 6px rgba(94, 11, 21, 0.1);
+}
+
+#logoutBtn:hover {
+    background: var(--maroon-primary);
+    color: var(--white-pure);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(94, 11, 21, 0.2);
+}
+
+#logoutBtn:active {
+    transform: translateY(1px);
+}
+
+/* ============================================
+   DASHBOARD WRAPPER (KPI + PANELS + QUICK LINKS)
+   ============================================ */
+.dashboard-wrapper {
+    padding: 0 2rem 2rem;
+}
+
+/* ============================================
+   KPI CARDS ROW
+   ============================================ */
+.kpi-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.kpi-card {
+    flex: 1;
+    min-width: 180px;
+    background: var(--white-pure);
+    border-radius: 28px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-border);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--maroon-primary), var(--maroon-light));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.kpi-card:hover::before {
+    transform: scaleX(1);
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--maroon-soft);
+}
+
+.kpi-card h3 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--maroon-dark);
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.kpi-card p {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--maroon-primary);
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Highlight cards (Today's Sales & Profit) */
+.kpi-card.highlight {
+    background: linear-gradient(135deg, #fef5f3 0%, var(--white-pure) 100%);
+    border-left: 4px solid var(--maroon-primary);
+}
+
+.kpi-card.highlight p {
+    color: #2d6a4f;
+}
+
+/* ============================================
+   PANELS (Low Stock Alerts & Recent Sales)
+   ============================================ */
+.panel {
+    background: var(--white-pure);
+    border-radius: 28px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-border);
+    transition: var(--transition);
+}
+
+.panel:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.panel h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--maroon-dark);
+    margin-bottom: 1.2rem;
+    letter-spacing: -0.2px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-left: 4px solid var(--maroon-primary);
+    padding-left: 1rem;
+}
+
+/* Tables inside panels */
+.panel table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white-pure);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.panel th {
+    background: var(--maroon-dark);
+    color: var(--white-pure);
+    padding: 0.8rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.panel td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--gray-border);
+    color: #1e293b;
+    font-size: 0.9rem;
+}
+
+.panel tr:hover td {
+    background: #fef5f3;
+}
+
+/* Low stock table specific */
+#lowStockTable td:last-child {
+    font-weight: 700;
+    color: #dc2626;
+}
+
+/* ============================================
+   QUICK LINKS
+   ============================================ */
+.quick-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1rem 0;
+}
+
+.quick-links a {
+    background: #fef5f3;
+    color: var(--maroon-dark);
+    text-decoration: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 60px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: var(--transition);
+    border: 1px solid var(--gray-border);
+}
+
+.quick-links a:hover {
+    background: var(--maroon-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(94, 11, 21, 0.2);
+    border-color: var(--maroon-primary);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 992px) {
+    .side-bar {
+        width: 260px;
+    }
+    .pages-links ul li {
+        padding: 0.7rem 1rem;
+        font-size: 0.9rem;
+    }
+    .side-bar h1 {
+        font-size: 1.4rem;
+        padding: 1.5rem 1.2rem 1rem;
+    }
+    .kpi-card {
+        min-width: 160px;
+        padding: 1.2rem;
+    }
+    .kpi-card p {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-admin-dashboard {
+        flex-direction: column;
+    }
+    .side-bar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.8rem 1.5rem;
+        gap: 0.8rem;
+        border-radius: 0 0 28px 28px;
+    }
+    .side-bar h1 {
+        padding: 0;
+        margin: 0;
+        border-bottom: none;
+        font-size: 1.3rem;
+        background: none;
+        -webkit-background-clip: unset;
+        color: var(--white-pure);
+        text-shadow: none;
+    }
+    .pages-links {
+        padding: 0;
+        width: auto;
+    }
+    .pages-links ul {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+    .pages-links ul li {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        gap: 6px;
+    }
+    .pages-links ul li::before {
+        font-size: 1rem !important;
+        width: auto !important;
+    }
+    .dashboard-wrapper {
+        padding: 0 1rem 1rem;
+    }
+    .navbar {
+        padding: 0.6rem 1rem;
+        margin-bottom: 1rem;
+    }
+    .kpi-row {
+        gap: 1rem;
+    }
+    .kpi-card {
+        min-width: 140px;
+        padding: 1rem;
+    }
+    .kpi-card h3 {
+        font-size: 0.7rem;
+    }
+    .kpi-card p {
+        font-size: 1.4rem;
+    }
+    .panel {
+        padding: 1rem;
+        overflow-x: auto;
+    }
+    .panel table {
+        min-width: 500px;
+    }
+    .quick-links {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 550px) {
+    .kpi-row {
+        flex-direction: column;
+    }
+    .kpi-card {
+        width: 100%;
+    }
+    .quick-links a {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .side-bar {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        padding: 1rem;
+    }
+    .pages-links ul {
+        justify-content: center;
+    }
+    .navbar nav ul {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    #logoutBtn {
+        width: 100%;
+    }
+    .pages-links ul li {
+        justify-content: center;
+    }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateX(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard-content {
+    animation: fadeSlide 0.3s ease-out;
+}
+
+.kpi-card, .panel, .quick-links {
+    animation: fadeUp 0.4s ease backwards;
+}
+
+.kpi-card:nth-child(1) { animation-delay: 0.02s; }
+.kpi-card:nth-child(2) { animation-delay: 0.05s; }
+.kpi-card:nth-child(3) { animation-delay: 0.08s; }
+.kpi-card:nth-child(4) { animation-delay: 0.11s; }
+.panel:first-of-type { animation-delay: 0.14s; }
+.panel:last-of-type { animation-delay: 0.17s; }
+
+/* Icon hover effect */
+.pages-links ul a:hover li::before {
+    transform: scale(1.1);
+    transition: transform 0.2s;
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+@media print {
+    .side-bar, .navbar, .quick-links, #logoutBtn {
+        display: none;
+    }
+    .kpi-card, .panel {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    body {
+        background: white;
+    }
+    .dashboard-content {
+        padding: 0;
+    }
+}
+
+/* ========== END OF ADMIN DASHBOARD CSS ========== */

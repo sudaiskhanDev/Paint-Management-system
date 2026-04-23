@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Css/Admin dashboard.css">
+    <link rel="stylesheet" href="../../Css/Pages/Sales.css">
+    <title>Admin - Sales</title>
+</head>
+
+<body>
+
+<div class="main-admin-dashboard">
+
+    <!-- ================= SIDEBAR ================= -->
+    <div class="side-bar">
+        <h1>Admin Dashboard</h1>
+
+        <div class="pages-links">
+                <ul>
+                    <a href="../Admin dashboard.html"><li>Home</li></a>
+                    <a href="./Add Staff.html"><li>Add Staff</li></a>
+                    <a href="./Brands.html"><li>Brands</li></a>
+                    <a href="./Categories.html"><li>Categories</li></a>
+                    <a href="./Customers.html"><li>Customers</li></a>
+                    <a href="./inventory.html"><li>Inventory</li></a>
+                    <a href="./Products.html"><li>Products</li></a>
+                    <a href="./Purchase.html"><li>Purchase</li></a>
+                    <a href="./purchase_items.html"><li>Purchase Items</li></a>
+                    <a href="./Sales.html"><li>Sales</li></a>
+                    <a href="./SaleItem.html"><li>Sale Items</li></a>
+                    <a href="./Suppliers.html"><li>Suppliers</li></a>
+                    <a href="./Reports.html"><li>Reports</li></a>
+                    
+
+                </ul>
+            </div>
+    </div>
+
+    <!-- ================= CONTENT ================= -->
+    <div class="dashboard-content">
+
+        <h2>Add Sale</h2>
+
+        <form id="saleForm">
+
+            <select id="customer_id" required>
+                <option value="">Select Customer</option>
+            </select>
+
+            <select id="user_id" required>
+                <option value="">Select User</option>
+            </select>
+
+            <input type="number" id="total_amount" placeholder="Total Amount" required>
+            <input type="number" id="discount" placeholder="Discount">
+
+            <select id="payment_status">
+                <option value="pending">Pending</option>
+                <option value="paid">Paid</option>
+                <option value="partial">Partial</option>
+            </select>
+
+            <input type="date" id="sale_date" required>
+
+            <button type="submit">Add Sale</button>
+        </form>
+
+        <hr>
+
+        <h2>Sales List</h2>
+
+        <table border="1" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>User</th>
+                    <th>Total</th>
+                    <th>Discount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="salesTableBody"></tbody>
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+// ================= API =================
+const API_SALES = "http://127.0.0.1:8000/api/sales";
+const API_CUSTOMERS = "http://127.0.0.1:8000/api/customers";
+const API_USERS = "http://127.0.0.1:8000/api/users";
+
+const token = localStorage.getItem("token");
+
+// ================= LOAD CUSTOMERS =================
+async function loadCustomers() {
+    const res = await fetch(API_CUSTOMERS, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    const data = await res.json();
+    const customers = data.data || data;
+
+    const select = document.getElementById("customer_id");
+    select.innerHTML = `<option value="">Select Customer</option>`;
+
+    customers.forEach(c => {
+        select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+    });
+}
+
+// ================= LOAD USERS =================
+async function loadUsers() {
+    const res = await fetch(API_USERS, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    const data = await res.json();
+    const users = data.data || data;
+
+    const select = document.getElementById("user_id");
+    select.innerHTML = `<option value="">Select User</option>`;
+
+    users.forEach(u => {
+        select.innerHTML += `<option value="${u.id}">${u.name}</option>`;
+    });
+}
+
+// ================= LOAD SALES =================
+async function loadSales() {
+    const res = await fetch(API_SALES, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    const data = await res.json();
+    const sales = data.data || data;
+
+    const tbody = document.getElementById("salesTableBody");
+    tbody.innerHTML = "";
+
+    sales.forEach(s => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${s.id}</td>
+                <td>${s.customer?.name || '-'}</td>
+                <td>${s.user?.name || '-'}</td>
+                <td>${s.total_amount}</td>
+                <td>${s.discount}</td>
+                <td>${s.payment_status}</td>
+                <td>${s.sale_date}</td>
+                <td>
+                    <button onclick="deleteSale(${s.id})">Delete</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+// ================= ADD SALE =================
+document.getElementById("saleForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const payload = {
+        customer_id: document.getElementById("customer_id").value,
+        user_id: document.getElementById("user_id").value,
+        total_amount: document.getElementById("total_amount").value,
+        discount: document.getElementById("discount").value || 0,
+        payment_status: document.getElementById("payment_status").value,
+        sale_date: document.getElementById("sale_date").value
+    };
+
+    await fetch(API_SALES, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify(payload)
+    });
+
+    alert("Sale Added!");
+    this.reset();
+    loadSales();
+});
+
+// ================= DELETE =================
+async function deleteSale(id) {
+    if (!confirm("Are you sure?")) return;
+
+    await fetch(`${API_SALES}/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    alert("Deleted!");
+    loadSales();
+}
+
+// ================= INIT =================
+loadCustomers();
+loadUsers();
+loadSales();
+
+</script>
+
+</body>
+</html>

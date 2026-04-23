@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Purchase Items | Admin Dashboard</title>
+    <link rel="stylesheet" href="../../Css/Admin dashboard.css">
+    <style>
+        /* =============================================
+           PURCHASE ITEMS MANAGEMENT - DETAILED CSS
+           White & Dark Maroon Theme | Sidebar untouched
+           Form, Table, Actions | Fully Responsive
+           ============================================= */
+
+        /* ---------- GOOGLE FONTS ---------- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+
+        /* BASE LAYOUT (sidebar + content) */
+        .main-admin-dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+        /* SIDEBAR - no additional styling (keep original appearance, just layout) */
+        .side-bar {
+            width: 260px;
+            flex-shrink: 0;
+            /* no extra background or color overrides — keep as original */
+        }
+        /* DASHBOARD CONTENT (your maroon/white theme) */
+        .dashboard-content {
+            flex: 1;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #fefcf8 0%, #f8f5f2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #1e293b;
+        }
+
+        /* ---------- HEADING ---------- */
+        .dashboard-content h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #5E0B15;
+            margin-bottom: 1.8rem;
+            letter-spacing: -0.3px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .dashboard-content h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #7A1C2C, #9E2A3B);
+            border-radius: 3px;
+        }
+
+        /* ============================================
+           FORM CONTAINER (ADD / EDIT ITEMS)
+           ============================================ */
+        .form-container {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(94, 11, 21, 0.08);
+            border: 1px solid #ede7e6;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+            transition: all 0.25s ease;
+        }
+
+        .form-container:hover {
+            box-shadow: 0 12px 28px rgba(94, 11, 21, 0.12);
+        }
+
+        .form-container select,
+        .form-container input {
+            flex: 1;
+            min-width: 140px;
+            padding: 0.8rem 1rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+            background: #fefcf8;
+            outline: none;
+        }
+
+        .form-container select:focus,
+        .form-container input:focus {
+            border-color: #7A1C2C;
+            box-shadow: 0 0 0 3px rgba(122, 28, 44, 0.15);
+            background: #ffffff;
+        }
+
+        .form-container button {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.8rem 1.2rem;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #7A1C2C;
+            color: white;
+            box-shadow: 0 4px 8px rgba(94, 11, 21, 0.2);
+        }
+
+        .form-container button:hover {
+            background: #5E0B15;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(94, 11, 21, 0.25);
+        }
+
+        .form-container button:active {
+            transform: translateY(1px);
+        }
+
+        #updateBtn {
+            background: #1e40af;
+            box-shadow: 0 4px 8px rgba(30, 64, 175, 0.2);
+        }
+
+        #updateBtn:hover {
+            background: #1e3a8a;
+        }
+
+        /* ========== CUSTOM DROPDOWN WITH IMAGES (maroon-compatible) ========== */
+        .custom-dropdown {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+        .dropdown-selected {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.7rem 1rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 20px;
+            background: #fefcf8;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .dropdown-selected:hover {
+            border-color: #7A1C2C;
+        }
+        .dropdown-selected img {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #f1f5f9;
+        }
+        .selected-text {
+            flex: 1;
+            font-size: 0.9rem;
+            color: #1e293b;
+        }
+        .dropdown-arrow {
+            font-size: 12px;
+            color: #7A1C2C;
+        }
+        .dropdown-list {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            margin-top: 6px;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.1);
+        }
+        .dropdown-list.show {
+            display: block;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f0eae8;
+        }
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        .dropdown-item:hover {
+            background: #fef5f3;
+        }
+        .dropdown-item img {
+            width: 42px;
+            height: 42px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #f8f5f2;
+        }
+        .product-info {
+            flex: 1;
+        }
+        .product-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #1e293b;
+        }
+        .product-price {
+            font-size: 0.7rem;
+            color: #2d6a4f;
+            font-weight: 500;
+        }
+        .product-stock {
+            font-size: 0.65rem;
+            color: #64748b;
+        }
+        #selected_product_id_field {
+            display: none;
+        }
+
+        /* ============================================
+           TABLE STYLES
+           ============================================ */
+        table {
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(94, 11, 21, 0.08);
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 0.5rem;
+        }
+
+        thead tr {
+            background: #5E0B15;
+        }
+
+        th {
+            padding: 1rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            border-bottom: 2px solid #7A1C2C;
+        }
+
+        th:first-child {
+            border-top-left-radius: 24px;
+            padding-left: 1.5rem;
+        }
+
+        th:last-child {
+            border-top-right-radius: 24px;
+            padding-right: 1.5rem;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #ede7e6;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #fef5f3;
+        }
+
+        td {
+            padding: 1rem 1rem;
+            vertical-align: middle;
+            font-size: 0.9rem;
+            color: #1e293b;
+        }
+
+        td:first-child {
+            padding-left: 1.5rem;
+            font-weight: 500;
+            color: #5E0B15;
+        }
+
+        td:last-child {
+            padding-right: 1.5rem;
+        }
+
+        td b {
+            color: #5E0B15;
+        }
+
+        td small {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+
+        .product-cell-inline {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .product-cell-inline img {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid #e2e8f0;
+            background: white;
+        }
+
+        /* Action Buttons */
+        .btn-edit, .btn-delete {
+            padding: 0.4rem 1rem;
+            margin: 0 0.25rem;
+            border: none;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit {
+            background: #eef2ff;
+            color: #5E0B15;
+        }
+
+        .btn-edit:hover {
+            background: #7A1C2C;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        td:nth-child(6) {
+            font-weight: 700;
+            color: #2d6a4f;
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN (MOBILE CARD LAYOUT)
+           ============================================ */
+        @media (max-width: 768px) {
+            .main-admin-dashboard {
+                flex-direction: column;
+            }
+            .side-bar {
+                width: 100%;
+            }
+            .dashboard-content {
+                padding: 1rem;
+            }
+            .form-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .custom-dropdown {
+                width: 100%;
+            }
+            .form-container select,
+            .form-container input,
+            .form-container button,
+            .dropdown-selected {
+                width: 100%;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead {
+                display: none;
+            }
+            tbody tr {
+                background: #ffffff;
+                border-radius: 24px;
+                margin-bottom: 1.2rem;
+                padding: 1rem;
+                box-shadow: 0 4px 12px rgba(94, 11, 21, 0.08);
+                border: 1px solid #ede7e6;
+            }
+            td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.7rem 0;
+                border-bottom: 1px dashed #ede7e6;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+            td:last-child {
+                border-bottom: none;
+            }
+            td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: #5E0B15;
+                background: #fef5f3;
+                padding: 0.2rem 0.8rem;
+                border-radius: 30px;
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+                width: 110px;
+                flex-shrink: 0;
+            }
+            td:nth-child(1)::before { content: "ID"; }
+            td:nth-child(2)::before { content: "Purchase (Supplier)"; }
+            td:nth-child(3)::before { content: "Product"; }
+            td:nth-child(4)::before { content: "Qty"; }
+            td:nth-child(5)::before { content: "Price"; }
+            td:nth-child(6)::before { content: "Subtotal"; }
+            td:nth-child(7)::before { content: "Action"; }
+        }
+
+        @media (max-width: 480px) {
+            td::before {
+                width: 80px;
+                font-size: 0.65rem;
+            }
+            td {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .form-container, table {
+            animation: fadeSlideUp 0.4s ease-out;
+        }
+        tbody tr {
+            animation: fadeSlide 0.2s ease backwards;
+        }
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .dashboard-content {
+                background: white;
+                padding: 0;
+            }
+            .form-container, .custom-dropdown, .btn-edit, .btn-delete {
+                display: none;
+            }
+            table {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            th {
+                background: #f1f1f1;
+                color: black;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="main-admin-dashboard">
+    <!-- SIDEBAR (original markup, no extra styling applied) -->
+    <div class="side-bar">
+        <h1>Admin Dashboard</h1>
+        <div class="pages-links">
+            <ul>
+                <a href="../Admin dashboard.html"><li>Home</li></a>
+                <a href="./Add Staff.html"><li>Add Staff</li></a>
+                <a href="./Brands.html"><li>Brands</li></a>
+                <a href="./Categories.html"><li>Categories</li></a>
+                <a href="./Customers.html"><li>Customers</li></a>
+                <a href="./inventory.html"><li>Inventory</li></a>
+                <a href="./Products.html"><li>Products</li></a>
+                <a href="./Purchase.html"><li>Purchase</li></a>
+                <a href="./purchase_items.html"><li>Purchase Items</li></a>
+                <a href="./Sales.html"><li>Sales</li></a>
+                <a href="./SaleItem.html"><li>Sale Items</li></a>
+                <a href="./Suppliers.html"><li>Suppliers</li></a>
+                <a href="./Reports.html"><li>Reports</li></a>
+            </ul>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT (your maroon/white theme) -->
+    <div class="dashboard-content">
+        <h2>📦 Purchase Items Manager</h2>
+
+        <!-- FORM with CUSTOM IMAGE DROPDOWN -->
+        <div class="form-container">
+            <select id="purchase_id" required>
+                <option value="">-- Select Purchase --</option>
+            </select>
+
+            <!-- Custom product dropdown with images (fully styled) -->
+            <div class="custom-dropdown" id="productCustomDropdown">
+                <div class="dropdown-selected" id="dropdownSelected">
+                    <img id="selectedImg" src="../../Assets/default-product.png" alt="product">
+                    <span class="selected-text" id="selectedTextVal">-- Select Product --</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-list" id="dropdownList"></div>
+            </div>
+            <input type="hidden" id="selected_product_id" value="">
+
+            <input type="number" id="quantity" placeholder="Quantity" min="1">
+            <input type="number" id="price" placeholder="Price" step="0.01" min="0">
+            <button onclick="createItem()">➕ Add Item</button>
+            <button onclick="updateItem()" id="updateBtn" style="display:none;">✏️ Update Item</button>
+        </div>
+
+        <!-- DATA TABLE -->
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Purchase (Supplier)</th><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th><th>Action</th></tr>
+            </thead>
+            <tbody id="tbody">
+                <tr><td colspan="7" style="text-align:center">⏳ Loading items...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // -------------------- API ENDPOINTS --------------------
+    const API = "http://localhost:8000/api/purchase-items";
+    const PURCHASE_API = "http://localhost:8000/api/purchases";
+    const PRODUCT_API = "http://localhost:8000/api/products";
+
+    let purchasesData = [];
+    let productsList = [];
+    let editId = null;
+    let currentProductId = "";
+
+    const DEFAULT_IMAGE = "../../Assets/default-product.png";
+
+    // Helper: get full image URL from product (supports image, image_url, storage)
+    function getProductImageUrl(product) {
+        if (!product) return DEFAULT_IMAGE;
+        if (product.image_url && product.image_url.startsWith('http')) return product.image_url;
+        if (product.image) {
+            if (product.image.startsWith('http')) return product.image;
+            if (product.image.startsWith('storage/')) return `http://localhost:8000/${product.image}`;
+            return `http://localhost:8000/storage/${product.image}`;
+        }
+        return DEFAULT_IMAGE;
+    }
+
+    // Load purchases
+    async function loadPurchases() {
+        try {
+            const res = await fetch(PURCHASE_API);
+            purchasesData = await res.json();
+            const sel = document.getElementById("purchase_id");
+            sel.innerHTML = `<option value="">Select Purchase</option>`;
+            purchasesData.forEach(p => {
+                sel.innerHTML += `<option value="${p.id}">#${p.id} | ${p.supplier?.name || 'N/A'} (${p.supplier?.phone || '-'}) | ${p.purchase_date || ''} | $${p.total_amount ?? 0}</option>`;
+            });
+        } catch (err) { console.error(err); }
+    }
+
+    // Build custom dropdown with product images
+    function buildProductDropdown() {
+        const container = document.getElementById("dropdownList");
+        if (!container) return;
+        container.innerHTML = "";
+        // default option
+        const defaultDiv = document.createElement("div");
+        defaultDiv.className = "dropdown-item";
+        defaultDiv.innerHTML = `<img src="${DEFAULT_IMAGE}" alt="none"><div class="product-info"><div class="product-name">-- Select Product --</div></div>`;
+        defaultDiv.onclick = () => {
+            selectProductItem("", "", "-- Select Product --", DEFAULT_IMAGE);
+            closeDropdown();
+        };
+        container.appendChild(defaultDiv);
+
+        productsList.forEach(prod => {
+            const imgUrl = getProductImageUrl(prod);
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "dropdown-item";
+            itemDiv.innerHTML = `
+                <img src="${imgUrl}" alt="${escapeHtml(prod.name)}" onerror="this.src='${DEFAULT_IMAGE}'">
+                <div class="product-info">
+                    <div class="product-name">${escapeHtml(prod.name)}</div>
+                    <div class="product-price">$${parseFloat(prod.price).toFixed(2)}</div>
+                    <div class="product-stock">Stock: ${prod.stock ?? 0}</div>
+                </div>
+            `;
+            itemDiv.onclick = () => {
+                const displayTxt = `${prod.name} - $${prod.price}`;
+                selectProductItem(prod.id, prod, displayTxt, imgUrl);
+                closeDropdown();
+            };
+            container.appendChild(itemDiv);
+        });
+    }
+
+    function selectProductItem(prodId, prodObj, displayText, imageUrl) {
+        currentProductId = prodId;
+        document.getElementById("selected_product_id").value = prodId;
+        document.getElementById("selectedImg").src = imageUrl || DEFAULT_IMAGE;
+        document.getElementById("selectedTextVal").innerText = displayText || "-- Select Product --";
+    }
+
+    function toggleDropdown() {
+        const list = document.getElementById("dropdownList");
+        if (list) list.classList.toggle("show");
+    }
+    function closeDropdown() {
+        const list = document.getElementById("dropdownList");
+        if (list) list.classList.remove("show");
+    }
+
+    async function loadProducts() {
+        try {
+            const res = await fetch(PRODUCT_API);
+            productsList = await res.json();
+            buildProductDropdown();
+        } catch (err) { console.error(err); }
+    }
+
+    // Load items into table with images
+    async function loadItems() {
+        try {
+            const res = await fetch(API);
+            const items = await res.json();
+            const tbody = document.getElementById("tbody");
+            if (!items.length) {
+                tbody.innerHTML = '<tr><td colspan="7">✨ No purchase items found. Create one!</td></tr>';
+                return;
+            }
+            let html = "";
+            for (let item of items) {
+                const purchase = purchasesData.find(p => p.id == item.purchase_id);
+                let productImg = DEFAULT_IMAGE;
+                let productName = item.product?.name || 'N/A';
+                if (item.product) {
+                    productImg = getProductImageUrl(item.product);
+                }
+                const subtotal = (item.quantity * item.price).toFixed(2);
+                html += `
+                    <tr>
+                        <td data-label="ID">${item.id}</td>
+                        <td data-label="Purchase">
+                            <b>${purchase?.supplier?.name || 'N/A'}</b><br>
+                            ${purchase?.supplier?.phone || '-'}<br>
+                            <small>📅 ${purchase?.purchase_date || '-'}</small><br>
+                            <span>PO#${item.purchase_id}</span>
+                        </td>
+                        <td data-label="Product">
+                            <div class="product-cell-inline">
+                                <img src="${productImg}" alt="product" onerror="this.src='${DEFAULT_IMAGE}'">
+                                <span>${escapeHtml(productName)}</span>
+                            </div>
+                        </td>
+                        <td data-label="Qty">${item.quantity}</td>
+                        <td data-label="Price">$${parseFloat(item.price).toFixed(2)}</td>
+                        <td data-label="Subtotal">$${subtotal}</td>
+                        <td data-label="Action">
+                            <button class="btn-edit" onclick="editForm(${item.id}, ${item.purchase_id}, ${item.product_id}, ${item.quantity}, ${item.price})">Edit</button>
+                            <button class="btn-delete" onclick="del(${item.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }
+            tbody.innerHTML = html;
+        } catch (err) {
+            console.error(err);
+            document.getElementById("tbody").innerHTML = '<tr><td colspan="7">⚠️ Failed to load items</td></tr>';
+        }
+    }
+
+    // Create item
+    async function createItem() {
+        const purchaseId = document.getElementById("purchase_id").value;
+        const productId = currentProductId;
+        const quantity = document.getElementById("quantity").value;
+        const price = document.getElementById("price").value;
+
+        if (!purchaseId || !productId) { alert("❌ Please select Purchase and Product (with image dropdown)"); return; }
+        if (!quantity || quantity <= 0) { alert("❌ Valid quantity required"); return; }
+        if (!price || price <= 0) { alert("❌ Valid price required"); return; }
+
+        const payload = {
+            purchase_id: parseInt(purchaseId),
+            product_id: parseInt(productId),
+            quantity: parseInt(quantity),
+            price: parseFloat(price)
+        };
+        try {
+            const res = await fetch(API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            const result = await res.json();
+            if (!res.ok) { alert("Error: " + JSON.stringify(result)); return; }
+            resetForm();
+            await loadItems();
+            alert("✅ Purchase item added & stock updated!");
+        } catch (err) { alert("Network error"); }
+    }
+
+    // Edit
+    function editForm(id, purchaseId, prodId, qty, priceVal) {
+        editId = id;
+        document.getElementById("purchase_id").value = purchaseId;
+        const product = productsList.find(p => p.id == prodId);
+        if (product) {
+            const imgUrl = getProductImageUrl(product);
+            const displayTxt = `${product.name} - $${product.price}`;
+            selectProductItem(prodId, product, displayTxt, imgUrl);
+        } else {
+            selectProductItem(prodId, null, `Product ID ${prodId}`, DEFAULT_IMAGE);
+        }
+        document.getElementById("quantity").value = qty;
+        document.getElementById("price").value = priceVal;
+        document.getElementById("updateBtn").style.display = "inline-block";
+    }
+
+    // Update
+    async function updateItem() {
+        if (!editId) { alert("No item selected"); return; }
+        const purchaseId = document.getElementById("purchase_id").value;
+        const productId = currentProductId;
+        const quantity = document.getElementById("quantity").value;
+        const price = document.getElementById("price").value;
+        if (!purchaseId || !productId || !quantity || !price) { alert("All fields required"); return; }
+
+        const payload = {
+            purchase_id: parseInt(purchaseId),
+            product_id: parseInt(productId),
+            quantity: parseInt(quantity),
+            price: parseFloat(price)
+        };
+        try {
+            const res = await fetch(`${API}/${editId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) { const err = await res.json(); alert("Update failed: " + JSON.stringify(err)); return; }
+            resetForm();
+            await loadItems();
+            alert("✅ Item updated");
+        } catch (err) { alert("Update error"); }
+    }
+
+    // Delete
+    async function del(id) {
+        if (!confirm("⚠️ Delete this purchase item? Stock will be reverted.")) return;
+        try {
+            const res = await fetch(`${API}/${id}`, { method: "DELETE" });
+            if (!res.ok) throw new Error("Delete failed");
+            await loadItems();
+            alert("🗑️ Deleted");
+        } catch (err) { alert("Error deleting"); }
+    }
+
+    // Reset
+    function resetForm() {
+        document.getElementById("purchase_id").value = "";
+        document.getElementById("quantity").value = "";
+        document.getElementById("price").value = "";
+        selectProductItem("", null, "-- Select Product --", DEFAULT_IMAGE);
+        editId = null;
+        document.getElementById("updateBtn").style.display = "none";
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Dropdown event listeners
+    function bindDropdownEvents() {
+        const selectedDiv = document.getElementById("dropdownSelected");
+        if (selectedDiv) {
+            selectedDiv.addEventListener("click", (e) => {
+                e.stopPropagation();
+                toggleDropdown();
+            });
+        }
+        document.addEventListener("click", function(e) {
+            const container = document.getElementById("productCustomDropdown");
+            if (container && !container.contains(e.target)) {
+                closeDropdown();
+            }
+        });
+    }
+
+    // INIT
+    async function init() {
+        await loadPurchases();
+        await loadProducts();
+        await loadItems();
+        bindDropdownEvents();
+    }
+    init();
+</script>
+</body>
+</html>

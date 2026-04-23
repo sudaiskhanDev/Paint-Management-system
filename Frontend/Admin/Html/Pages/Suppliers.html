@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Suppliers Management</title>
+
+<link rel="stylesheet" href="../../Css/Admin dashboard.css">
+<link rel="stylesheet" href="../../Css/Pages/Suppliers.css">
+</head>
+
+<body>
+
+<div class="main-admin-dashboard">
+
+<!-- SIDEBAR -->
+<div class="side-bar">
+    <h1>Admin Dashboard</h1>
+
+  <div class="pages-links">
+                <ul>
+                    <a href="../Admin dashboard.html"><li>Home</li></a>
+                    <a href="./Add Staff.html"><li>Add Staff</li></a>
+                    <a href="./Brands.html"><li>Brands</li></a>
+                    <a href="./Categories.html"><li>Categories</li></a>
+                    <a href="./Customers.html"><li>Customers</li></a>
+                    <a href="./inventory.html"><li>Inventory</li></a>
+                    <a href="./Products.html"><li>Products</li></a>
+                    <a href="./Purchase.html"><li>Purchase</li></a>
+                    <a href="./purchase_items.html"><li>Purchase Items</li></a>
+                    <a href="./Sales.html"><li>Sales</li></a>
+                    <a href="./SaleItem.html"><li>Sale Items</li></a>
+                    <a href="./Suppliers.html"><li>Suppliers</li></a>
+                    <a href="./Reports.html"><li>Reports</li></a>
+                    
+
+                </ul>
+            </div>
+</div>
+
+<!-- CONTENT -->
+<div class="dashboard-content">
+
+<h2>Suppliers</h2>
+
+<!-- MESSAGE BOX -->
+<div id="messageBox"></div>
+
+<!-- FORM -->
+<form id="supplierForm">
+
+    <input type="hidden" id="supplier_id">
+
+    <input type="text" id="name" placeholder="Supplier Name" required>
+    <input type="text" id="phone" placeholder="Phone" required>
+    <input type="text" id="address" placeholder="Address" required>
+
+    <button type="submit">Save Supplier</button>
+</form>
+
+<!-- TABLE -->
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Phone</th>
+<th>Address</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="supplierTableBody"></tbody>
+</table>
+
+</div>
+</div>
+
+<script>
+
+const API_URL = "http://127.0.0.1:8000/api/suppliers";
+
+/* =========================
+   MESSAGE FUNCTION
+========================= */
+function showMessage(msg, type="error") {
+
+    const box = document.getElementById("messageBox");
+
+    box.style.display = "block";
+    box.innerHTML = msg;
+
+    if (type === "error") {
+        box.style.background = "#f8d7da";
+        box.style.color = "#721c24";
+    } else {
+        box.style.background = "#d4edda";
+        box.style.color = "#155724";
+    }
+
+    setTimeout(() => {
+        box.style.display = "none";
+    }, 3000);
+}
+
+/* =========================
+   LOAD SUPPLIERS
+========================= */
+async function loadSuppliers() {
+
+    const res = await fetch(API_URL);
+    const data = await res.json();
+
+    const tbody = document.getElementById("supplierTableBody");
+    tbody.innerHTML = "";
+
+    data.forEach(s => {
+
+        tbody.innerHTML += `
+        <tr>
+            <td>${s.id}</td>
+            <td>${s.name}</td>
+            <td>${s.phone}</td>
+            <td>${s.address}</td>
+            <td>
+                <button class="btn-edit"
+                    onclick="editSupplier(${s.id}, '${s.name}', '${s.phone}', '${s.address}')">
+                    Edit
+                </button>
+
+                <button class="btn-delete"
+                    onclick="deleteSupplier(${s.id})">
+                    Delete
+                </button>
+            </td>
+        </tr>`;
+    });
+}
+
+/* =========================
+   CREATE / UPDATE
+========================= */
+document.getElementById("supplierForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const id = document.getElementById("supplier_id").value;
+
+    const data = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        address: document.getElementById("address").value
+    };
+
+    const res = await fetch(id ? `${API_URL}/${id}` : API_URL, {
+        method: id ? "PUT" : "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+
+    /* =========================
+       ERROR HANDLING (IMPORTANT)
+    ========================= */
+    if (!res.ok) {
+
+        if (res.status === 422) {
+
+            // CUSTOM MESSAGE FOR PHONE DUPLICATE
+            if (result.phone) {
+                showMessage("Customer already saved", "error");
+            } else {
+                let errors = Object.values(result).flat().join("<br>");
+                showMessage(errors, "error");
+            }
+
+        } else {
+            showMessage(result.message || "Error occurred", "error");
+        }
+
+        return;
+    }
+
+    showMessage(id ? "Supplier Updated Successfully!" : "Supplier Added Successfully!", "success");
+
+    this.reset();
+    document.getElementById("supplier_id").value = "";
+
+    loadSuppliers();
+});
+
+/* =========================
+   EDIT
+========================= */
+function editSupplier(id, name, phone, address) {
+    document.getElementById("supplier_id").value = id;
+    document.getElementById("name").value = name;
+    document.getElementById("phone").value = phone;
+    document.getElementById("address").value = address;
+}
+
+/* =========================
+   DELETE
+========================= */
+async function deleteSupplier(id) {
+
+    if (!confirm("Are you sure?")) return;
+
+    await fetch(`${API_URL}/${id}`, {
+        method: "DELETE"
+    });
+
+    showMessage("Deleted Successfully!", "success");
+
+    loadSuppliers();
+}
+
+/* INIT */
+loadSuppliers();
+
+</script>
+
+</body>
+</html>

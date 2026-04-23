@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Css/Admin dashboard.css">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <div class="main-admin-dashboard">
+        
+        <!-- Sidebar containing navigation links for admin modules -->
+        <div class="side-bar">
+            <h1>Admin Dashboard</h1>
+
+            <div class="pages-links">
+                <ul>
+                    <a href="./Admin dashboard.html"><li>Home</li></a>
+                    <a href="./Pages/Add Staff.html"><li>Add Staff</li></a>
+                    <a href="./Pages/Brands.html"><li>Brands</li></a>
+                    <a href="./Pages/Categories.html"><li>Categories</li></a>
+                    <a href="./Pages/Customers.html"><li>Customers</li></a>
+                    <a href="./Pages/inventory.html"><li>Inventory</li></a>
+                    <a href="./Pages/Products.html"><li>Products</li></a>
+                    <a href="./Pages/Purchase.html"><li>Purchase</li></a>
+                    <a href="./Pages/purchase_items.html"><li>Purchase Items</li></a>
+                    <a href="./Pages/Sales.html"><li>Sales</li></a>
+                    <a href="./Pages/SaleItem.html"><li>Sale Items</li></a>
+                    <a href="./Pages/Suppliers.html"><li>Suppliers</li></a>
+                    <a href="./Pages/Reports.html"><li>Reports</li></a>
+                    
+
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Main content area where dynamic data and statistics will be displayed -->
+        <div class="dashboard-content">
+            
+            <!-- Nav Bar -->
+             <div class="navbar">
+                <nav>
+                    <ul>
+                        <a href="./Admin dashboard.html"><li>PMS</li></a>
+                        <button id="logoutBtn">Logout</button>
+                    </ul>
+                </nav>
+             </div>
+
+             <div class="dashboard-wrapper">
+
+    <!-- ================= KPI CARDS ================= -->
+    <div class="kpi-row">
+
+        <div class="kpi-card">
+            <h3>Products</h3>
+            <p id="kpiProducts">0</p>
+        </div>
+
+        <div class="kpi-card">
+            <h3>Customers</h3>
+            <p id="kpiCustomers">0</p>
+        </div>
+
+        <div class="kpi-card">
+            <h3>Suppliers</h3>
+            <p id="kpiSuppliers">0</p>
+        </div>
+
+        <div class="kpi-card">
+            <h3>Total Stock</h3>
+            <p id="kpiStock">0</p>
+        </div>
+
+    </div>
+
+    <!-- ================= SALES + PROFIT ================= -->
+    <div class="kpi-row">
+
+        <div class="kpi-card highlight">
+            <h3>Today's Sales</h3>
+            <p id="todaySales">0</p>
+        </div>
+
+        <div class="kpi-card highlight">
+            <h3>Today's Profit</h3>
+            <p id="todayProfit">0</p>
+        </div>
+
+        <div class="kpi-card">
+            <h3>Low Stock Items</h3>
+            <p id="lowStockCount">0</p>
+        </div>
+
+    </div>
+
+    <!-- ================= LOW STOCK TABLE ================= -->
+    <div class="panel">
+
+        <h2>⚠️ Low Stock Alerts</h2>
+
+        <table border="1" width="100%">
+            <thead>
+    <tr>
+        <th>Image</th>
+        <th>Product</th>
+        <th>Stock</th>
+    </tr>
+</thead>
+
+            <tbody id="lowStockTable"></tbody>
+        </table>
+
+    </div>
+
+    <!-- ================= RECENT ACTIVITY ================= -->
+    <div class="panel">
+
+        <h2>🧾 Recent Sales</h2>
+
+        <table border="1" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody id="recentSales"></tbody>
+        </table>
+
+    </div>
+
+    <!-- ================= QUICK LINKS ================= -->
+    <div class="quick-links">
+
+        <a href="./Pages/Products.html">Products</a>
+        <a href="./Pages/Inventory.html">Inventory</a>
+        <a href="./Pages/Sales.html">Sales</a>
+        <a href="./Pages/Suppliers.html">Suppliers</a>
+        <a href="./Pages/Reports.html">Reports</a>
+
+    </div>
+
+</div>
+        </div>
+        
+    </div>
+
+    <script src="../Js/Admin dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Css/Admin dashboard.css">
+    <link rel="stylesheet" href="../../Css/Pages/Categories.css">
+    <title>Admin Dashboard - Categories</title>
+    
+</head>
+<body>
+    <div class="main-admin-dashboard">
+        <div class="side-bar">
+            <h1>Admin Dashboard</h1>
+            <div class="pages-links">
+                <ul>
+                    <a href="../Admin dashboard.html"><li>Home</li></a>
+                    <a href="./Add Staff.html"><li>Add Staff</li></a>
+                    <a href="./Brands.html"><li>Brands</li></a>
+                    <a href="./Categories.html"><li>Categories</li></a>
+                    <a href="./Customers.html"><li>Customers</li></a>
+                    <a href="./inventory.html"><li>Inventory</li></a>
+                    <a href="./Products.html"><li>Products</li></a>
+                    <a href="./Purchase.html"><li>Purchase</li></a>
+                    <a href="./purchase_items.html"><li>Purchase Items</li></a>
+                    <a href="./Sales.html"><li>Sales</li></a>
+                    <a href="./SaleItem.html"><li>Sale Items</li></a>
+                    <a href="./Suppliers.html"><li>Suppliers</li></a>
+                    <a href="./Reports.html"><li>Reports</li></a>
+                    
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <h2>Categories</h2>
+
+            <!-- Add/Edit Category Form -->
+            <form id="category-form">
+                <input type="text" id="category-name" placeholder="Category Name" required>
+                <input type="hidden" id="category-id"> <!-- Hidden ID for edit -->
+                <button type="submit" id="form-btn">Add Category</button>
+                <button type="button" id="cancel-btn" style="display:none;">Cancel</button>
+            </form>
+
+            <!-- Categories Table -->
+            <table id="categories-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000/api/categories'; // Change to your backend URL
+
+        const tableBody = document.querySelector('#categories-table tbody');
+        const form = document.getElementById('category-form');
+        const categoryInput = document.getElementById('category-name');
+        const categoryIdInput = document.getElementById('category-id');
+        const formBtn = document.getElementById('form-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+
+        // Fetch & display categories
+        async function fetchCategories() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+
+                tableBody.innerHTML = data.map(cat => `
+                    <tr>
+                        <td>${cat.id}</td>
+                        <td>${cat.name}</td>
+                        <td>${new Date(cat.created_at).toLocaleString()}</td>
+                        <td>
+                            <button onclick="editCategory(${cat.id}, '${cat.name}')">Edit</button>
+                            <button onclick="deleteCategory(${cat.id})">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tableBody.innerHTML = '<tr><td colspan="4">Failed to load categories</td></tr>';
+                console.error(err);
+            }
+        }
+
+        // Add / Update category
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = categoryInput.value.trim();
+            const id = categoryIdInput.value;
+
+            if(!name) return;
+
+            try {
+                let res;
+                if(id) {
+                    // Update
+                    res = await fetch(`${API_URL}/${id}`, {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({name})
+                    });
+                } else {
+                    // Create
+                    res = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({name})
+                    });
+                }
+
+                if(res.ok) {
+                    resetForm();
+                    fetchCategories();
+                } else {
+                    const data = await res.json();
+                    alert('Error: ' + JSON.stringify(data));
+                }
+            } catch(err) {
+                console.error(err);
+            }
+        });
+
+        // Edit category
+        function editCategory(id, name) {
+            categoryInput.value = name;
+            categoryIdInput.value = id;
+            formBtn.textContent = 'Update Category';
+            cancelBtn.style.display = 'inline'; // Show cancel button
+        }
+
+        // Cancel edit
+        cancelBtn.addEventListener('click', resetForm);
+
+        function resetForm() {
+            categoryInput.value = '';
+            categoryIdInput.value = '';
+            formBtn.textContent = 'Add Category';
+            cancelBtn.style.display = 'none';
+        }
+
+        // Delete category
+        function deleteCategory(id) {
+            if(!confirm('Are you sure you want to delete this category?')) return;
+
+            fetch(`${API_URL}/${id}`, {method: 'DELETE'})
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                fetchCategories();
+            })
+            .catch(err => console.error(err));
+        }
+
+        // Initial load
+        window.addEventListener('DOMContentLoaded', fetchCategories);
+    </script>
+</body>
+</html>

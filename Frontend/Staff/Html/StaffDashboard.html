@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Css/StaffDashboard.css">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <div class="main-admin-dashboard">
+        
+        <!-- Sidebar containing navigation links for admin modules -->
+        <div class="side-bar">
+            <h1>Admin Dashboard</h1>
+
+            <div class="pages-links">
+                <ul>
+                    <a href="./StaffDashboard.html"><li>Home</li></a>
+                    <a href="./Pages/New Sale.html"><li>New Sale</li></a>
+                    <a href="./Pages/Products.html"><li>Products</li></a>
+                    <a href="./Pages/Inventory.html"><li>Inventory</li></a>
+                    <a href="./Pages/Report.html"><li>Report</li></a>
+
+                    
+
+                </ul>
+            </div>
+            
+        </div>
+        
+        <!-- Main content area where dynamic data and statistics will be displayed -->
+        <div class="dashboard-content">
+            
+            <!-- Nav Bar -->
+             <div class="navbar">
+                <nav>
+                    <ul>
+                        <a href="./Admin dashboard.html"><li>PMS</li></a>
+                        <button id="logoutBtn">Logout</button>
+                    </ul>
+                </nav>
+             </div>
+            <div class="staff-dashboard">
+
+    <!-- ========== KPI CARDS ========== -->
+    <div class="kpi-row">
+
+        <div class="kpi-card">
+            <h3>Products</h3>
+            <p id="staffProducts">0</p>
+        </div>
+
+        <div class="kpi-card">
+            <h3>Inventory Stock</h3>
+            <p id="staffStock">0</p>
+        </div>
+
+        <div class="kpi-card">
+            <h3>Today's Sales</h3>
+            <p id="staffSales">0</p>
+        </div>
+
+        <div class="kpi-card">
+            <h3>Profit</h3>
+            <p id="staffProfit">0</p>
+        </div>
+
+    </div>
+
+    <!-- ========== LOW STOCK ALERT ========== -->
+    <div class="panel">
+
+        <h2>⚠️ Low Stock Alert</h2>
+
+      <table border="1" width="100%">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Stock</th>
+        </tr>
+    </thead>
+
+    <tbody id="staffLowStock"></tbody>
+</table>
+
+    </div>
+
+    <!-- ========== QUICK SALES VIEW ========== -->
+    <div class="panel">
+
+        <h2>🧾 Recent Sales</h2>
+
+        <table border="1" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody id="staffRecentSales"></tbody>
+        </table>
+
+    </div>
+
+    <!-- ========== QUICK ACTIONS ========== -->
+    <div class="quick-actions">
+
+        <a href="./Pages/New Sale.html">➕ New Sale</a>
+        <a href="./Pages/Products.html">📦 Products</a>
+        <a href="./Pages/Inventory.html">📊 Inventory</a>
+        <a href="./Pages/Report.html">📈 Reports</a>
+
+    </div>
+
+</div>
+        </div>
+        
+    </div>
+
+    <script src="../Js/StaffDashboard.js"></script>
+</body>
+</html>

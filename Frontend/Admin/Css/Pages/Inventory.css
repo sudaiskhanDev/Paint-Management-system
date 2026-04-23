@@ -1,0 +1,314 @@
+/* =============================================
+   INVENTORY PAGE - DETAILED CSS (NO SIDEBAR)
+   White & Dark Maroon Theme | Responsive Table
+   Larger Images | Modern Animations
+   ============================================= */
+
+/* ---------- GOOGLE FONTS ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+
+/* ---------- DASHBOARD CONTENT BASE ---------- */
+.dashboard-content {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #fefcf8 0%, #f8f5f2 100%);
+    min-height: 100vh;
+    padding: 2rem;
+    color: #1e293b;
+}
+
+/* ---------- HEADING ---------- */
+.dashboard-content h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #5E0B15;
+    margin-bottom: 1.8rem;
+    letter-spacing: -0.3px;
+    position: relative;
+    display: inline-block;
+}
+
+.dashboard-content h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #7A1C2C, #9E2A3B);
+    border-radius: 3px;
+}
+
+/* ---------- TABLE CONTAINER (RESPONSIVE WRAP) ---------- */
+.dashboard-content table {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 12px 24px -12px rgba(94, 11, 21, 0.1);
+    border-collapse: separate;
+    border-spacing: 0;
+    transition: box-shadow 0.2s;
+}
+
+.dashboard-content table:hover {
+    box-shadow: 0 20px 30px -12px rgba(94, 11, 21, 0.15);
+}
+
+/* ---------- TABLE HEADER ---------- */
+.dashboard-content thead tr {
+    background: #5E0B15;
+}
+
+.dashboard-content th {
+    padding: 1rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    border-bottom: 2px solid #7A1C2C;
+}
+
+.dashboard-content th:first-child {
+    border-top-left-radius: 28px;
+    padding-left: 1.5rem;
+}
+
+.dashboard-content th:last-child {
+    border-top-right-radius: 28px;
+    padding-right: 1.5rem;
+}
+
+/* ---------- TABLE BODY ---------- */
+.dashboard-content tbody tr {
+    border-bottom: 1px solid #ede7e6;
+    transition: background 0.2s ease;
+}
+
+.dashboard-content tbody tr:hover {
+    background: #fef5f3;
+}
+
+.dashboard-content td {
+    padding: 1rem 1rem;
+    color: #1e293b;
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+
+.dashboard-content td:first-child {
+    padding-left: 1.5rem;
+    font-weight: 500;
+    color: #5E0B15;
+}
+
+.dashboard-content td:last-child {
+    padding-right: 1.5rem;
+}
+
+/* ---------- IMAGE INSIDE TABLE - LARGER SIZE ---------- */
+.dashboard-content td img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(94, 11, 21, 0.12);
+    transition: transform 0.25s ease, box-shadow 0.25s;
+    border: 2px solid #fef5f3;
+}
+
+.dashboard-content td img:hover {
+    transform: scale(1.6);
+    border-radius: 20px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    position: relative;
+    cursor: pointer;
+    border-color: #7A1C2C;
+}
+
+/* ---------- PRICE & STOCK STYLING ---------- */
+.dashboard-content td:nth-child(4) {  /* Price column */
+    font-weight: 700;
+    color: #7A1C2C;
+    font-size: 1rem;
+}
+
+.dashboard-content td:nth-child(5) {  /* Stock column */
+    font-weight: 700;
+    color: #2d6a4f;
+    font-size: 1rem;
+}
+
+/* low stock indicator (can be added via JS) */
+.dashboard-content td:nth-child(5).low-stock {
+    color: #dc2626;
+    background: #fee2e2;
+    border-radius: 40px;
+    display: inline-block;
+    padding: 0.2rem 0.8rem;
+}
+
+/* ---------- RESPONSIVE (MOBILE CARD LAYOUT) ---------- */
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 1rem;
+    }
+
+    .dashboard-content table,
+    .dashboard-content thead,
+    .dashboard-content tbody,
+    .dashboard-content th,
+    .dashboard-content td,
+    .dashboard-content tr {
+        display: block;
+    }
+
+    .dashboard-content thead {
+        display: none;
+    }
+
+    .dashboard-content tbody tr {
+        background: #ffffff;
+        border-radius: 24px;
+        margin-bottom: 1.2rem;
+        padding: 1rem;
+        box-shadow: 0 4px 12px rgba(94, 11, 21, 0.08);
+        border: 1px solid #ede7e6;
+    }
+
+    .dashboard-content td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.7rem 0;
+        border-bottom: 1px dashed #ede7e6;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .dashboard-content td:last-child {
+        border-bottom: none;
+    }
+
+    .dashboard-content td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: #5E0B15;
+        background: #fef5f3;
+        padding: 0.2rem 0.8rem;
+        border-radius: 30px;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        width: 100px;
+        flex-shrink: 0;
+    }
+
+    /* Set data labels for each column */
+    .dashboard-content td:nth-child(1)::before { content: "ID"; }
+    .dashboard-content td:nth-child(2)::before { content: "Image"; }
+    .dashboard-content td:nth-child(3)::before { content: "Name"; }
+    .dashboard-content td:nth-child(4)::before { content: "Price"; }
+    .dashboard-content td:nth-child(5)::before { content: "Stock"; }
+
+    .dashboard-content td img {
+        width: 55px;
+        height: 55px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-content td::before {
+        width: 80px;
+        font-size: 0.65rem;
+    }
+    .dashboard-content td {
+        font-size: 0.85rem;
+        padding: 0.6rem 0;
+    }
+    .dashboard-content td img {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* ---------- LOADING / EMPTY STATE ---------- */
+#table:empty::before {
+    content: "Loading inventory data...";
+    display: block;
+    text-align: center;
+    padding: 2rem;
+    color: #7A1C2C;
+    font-weight: 500;
+}
+
+/* ---------- SCROLLBAR (for overflow) ---------- */
+.dashboard-content {
+    overflow-x: auto;
+}
+
+.dashboard-content::-webkit-scrollbar {
+    height: 8px;
+}
+
+.dashboard-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.dashboard-content::-webkit-scrollbar-thumb {
+    background: #7A1C2C;
+    border-radius: 10px;
+}
+
+/* ---------- PRINT STYLES ---------- */
+@media print {
+    .dashboard-content {
+        background: white;
+        padding: 0;
+    }
+    .dashboard-content h2 {
+        color: black;
+    }
+    .dashboard-content table {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    .dashboard-content th {
+        background: #f1f1f1;
+        color: black;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .dashboard-content td img {
+        filter: grayscale(1);
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* ---------- ANIMATIONS ---------- */
+.dashboard-content tbody tr {
+    animation: fadeSlide 0.2s ease backwards;
+}
+
+.dashboard-content tbody tr:nth-child(1) { animation-delay: 0.02s; }
+.dashboard-content tbody tr:nth-child(2) { animation-delay: 0.05s; }
+.dashboard-content tbody tr:nth-child(3) { animation-delay: 0.08s; }
+.dashboard-content tbody tr:nth-child(4) { animation-delay: 0.11s; }
+.dashboard-content tbody tr:nth-child(5) { animation-delay: 0.14s; }
+
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ========== END OF INVENTORY PAGE CSS ========== */

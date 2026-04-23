@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+
+  <style>
+    /* =============================================
+   LOGIN PAGE - PROFESSIONAL CSS
+   White & Dark Maroon Theme | Modern Animations
+   Fully Responsive | Clean & Secure Look
+   ============================================= */
+
+/* ---------- GOOGLE FONTS ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+
+/* ---------- RESET & GLOBAL ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    position: relative;
+}
+
+/* subtle background pattern */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle at 10% 20%, rgba(94, 11, 21, 0.03) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+}
+
+/* ============================================
+   LOGIN BOX (CARD)
+   ============================================ */
+.login-box {
+    background: #ffffff;
+    max-width: 440px;
+    width: 100%;
+    padding: 2.5rem 2rem;
+    border-radius: 32px;
+    box-shadow: 0 25px 50px -12px rgba(94, 11, 21, 0.25), 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeSlideUp 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+    border: 1px solid rgba(122, 28, 44, 0.1);
+}
+
+.login-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 32px 60px -16px rgba(94, 11, 21, 0.3);
+}
+
+/* Heading */
+.login-box h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #5E0B15;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.3px;
+    position: relative;
+    display: inline-block;
+}
+
+.login-box h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #7A1C2C, #9E2A3B);
+    border-radius: 3px;
+}
+
+/* ============================================
+   INPUT FIELDS
+   ============================================ */
+.login-box input {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    margin: 0.75rem 0;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 28px;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.25s ease;
+    background: #fefcf8;
+    outline: none;
+    color: #1e293b;
+}
+
+.login-box input:focus {
+    border-color: #7A1C2C;
+    box-shadow: 0 0 0 4px rgba(122, 28, 44, 0.15);
+    background: #ffffff;
+}
+
+.login-box input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+/* ============================================
+   LOGIN BUTTON
+   ============================================ */
+#loginBtn {
+    width: 100%;
+    padding: 0.9rem;
+    margin-top: 1.2rem;
+    background: linear-gradient(95deg, #7A1C2C, #5E0B15);
+    color: white;
+    border: none;
+    border-radius: 40px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 14px rgba(94, 11, 21, 0.25);
+}
+
+#loginBtn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+#loginBtn:hover::before {
+    left: 100%;
+}
+
+#loginBtn:hover {
+    background: linear-gradient(95deg, #9E2A3B, #7A1C2C);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -8px rgba(94, 11, 21, 0.4);
+}
+
+#loginBtn:active {
+    transform: translateY(1px);
+}
+
+/* ============================================
+   ERROR MESSAGE STYLING
+   ============================================ */
+.error {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 0.7rem 1rem;
+    border-radius: 60px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    text-align: center;
+    animation: shake 0.4s ease-in-out;
+    border-left: 4px solid #dc2626;
+}
+
+/* error animation */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 520px) {
+    body {
+        padding: 1rem;
+    }
+
+    .login-box {
+        padding: 1.8rem 1.5rem;
+    }
+
+    .login-box h2 {
+        font-size: 1.6rem;
+    }
+
+    .login-box input {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    #loginBtn {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .login-box {
+        padding: 1.5rem 1rem;
+    }
+
+    .login-box h2 {
+        font-size: 1.4rem;
+    }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.97);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* optional loading state for button (if needed via JS) */
+#loginBtn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+#loginBtn.loading::after {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 10px;
+    border: 2px solid white;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   ACCESSIBILITY & FOCUS
+   ============================================ */
+#loginBtn:focus-visible,
+.login-box input:focus-visible {
+    outline: 2px solid #9E2A3B;
+    outline-offset: 2px;
+}
+
+/* ========== END OF LOGIN PAGE CSS ========== */
+  </style>
+
+
+</head>
+
+<body>
+
+<div class="login-box">
+  <h2>Login</h2>
+
+  <div class="error" id="error"></div>
+
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <button id="loginBtn">Login</button>
+</div>
+
+<script>
+document.getElementById('loginBtn').addEventListener('click', async function() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const errorDiv = document.getElementById('error');
+
+    errorDiv.textContent = '';
+
+    if (!email || !password) {
+        errorDiv.textContent = 'Both fields are required';
+        return;
+    }
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/user/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            errorDiv.textContent = data.message || 'Login failed';
+            return;
+        }
+
+        localStorage.setItem('token', data.access_token);
+
+        const role = data.user.role;
+
+        if (role === 'admin') {
+            window.location.href = './Admin/Html/Admin dashboard.html';
+        } else if (role === 'staff') {
+            window.location.href = './Staff/Html/StaffDashboard.html';
+        } else {
+            errorDiv.textContent = 'Unknown role';
+        }
+
+    } catch (err) {
+        errorDiv.textContent = 'Server error';
+        console.error(err);
+    }
+});
+</script>
+
+</body>
+</html>
