@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Paint World | Home</title>
+    <!-- Google Fonts + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #fefcf8;
+            color: #1e293b;
+        }
+
+        /* ---------- MAROON & WHITE THEME (like admin dashboard) ---------- */
+        .nav-bar {
+            background: #5E0B15;  /* dark maroon */
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: 0 4px 12px rgba(94, 11, 21, 0.2);
+        }
+
+        .nav-bar h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-bar h1 i {
+            color: #f5c542;
+            margin-right: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #f0eae8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #f5c542;
+        }
+
+        .btn-login {
+            background: #f5c542;
+            color: #5E0B15 !important;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 700;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #7A1C2C 0%, #5E0B15 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            opacity: 0.95;
+        }
+
+        .hero .btn {
+            background: #f5c542;
+            color: #5E0B15;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-block;
+            transition: 0.2s;
+        }
+
+        .hero .btn:hover {
+            background: #e0b03b;
+            transform: translateY(-2px);
+        }
+
+        .hero img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 20px;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        /* Stats Bar (white cards with maroon accents) */
+        .stats-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            background: white;
+            padding: 2rem;
+            margin: -2rem 1rem 1rem 1rem;
+            border-radius: 48px;
+            box-shadow: 0 12px 28px rgba(94, 11, 21, 0.1);
+            position: relative;
+            z-index: 2;
+            border: 1px solid #ede7e6;
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #5E0B15;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #7A1C2C;
+            font-weight: 600;
+        }
+
+        /* Sections */
+        .section {
+            padding: 3rem 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #5E0B15;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: #7A1C2C;
+            margin: 0.5rem auto 0;
+            border-radius: 3px;
+        }
+
+        /* Brands & Categories grid */
+        .brands-grid, .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .brand-card, .category-card {
+            background: white;
+            border-radius: 24px;
+            padding: 1.2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(94, 11, 21, 0.08);
+            transition: all 0.2s;
+            border: 1px solid #ede7e6;
+        }
+
+        .brand-card:hover, .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px rgba(94, 11, 21, 0.12);
+            border-color: #7A1C2C;
+        }
+
+        .brand-card i, .category-card i {
+            font-size: 2rem;
+            color: #7A1C2C;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-card h3, .category-card h3 {
+            color: #1e293b;
+            font-size: 1rem;
+        }
+
+        /* Products grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            transition: transform 0.25s, box-shadow 0.25s;
+            box-shadow: 0 8px 20px rgba(94, 11, 21, 0.08);
+            border: 1px solid #ede7e6;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px rgba(94, 11, 21, 0.12);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f8f5f2;
+        }
+
+        .product-info {
+            padding: 1.2rem;
+        }
+
+        .product-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+            color: #5E0B15;
+        }
+
+        .product-meta {
+            font-size: 0.8rem;
+            color: #7A1C2C;
+            margin: 0.3rem 0;
+        }
+
+        .product-price {
+            color: #5E0B15;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+        }
+
+        .badge-stock {
+            display: inline-block;
+            background: #e6f7e6;
+            color: #2b6e2b;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .badge-lowstock {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .loading, .error-msg {
+            text-align: center;
+            padding: 2rem;
+            grid-column: 1/-1;
+        }
+
+        .error-msg {
+            color: #b91c1c;
+            background: #fee2e2;
+            border-radius: 40px;
+        }
+
+        .footer {
+            background: #5E0B15;
+            color: #f0eae8;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            .stats-bar {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-home-page">
+
+    <!-- ========== NAVBAR (Maroon Theme) ========== -->
+    <div class="nav-bar">
+        <h1><i class="fas fa-paint-roller"></i> Paint World Management System</h1>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#brands">Brands</a>
+            <a href="#categories">Categories</a>
+            <a href="#products">Products</a>
+            <a href="./login.html" class="btn-login"><i class="fas fa-user-lock"></i> Staff/Admin Login</a>
+        </div>
+    </div>
+
+    <!-- ========== HERO ========== -->
+    <div class="hero">
+        <h2>Complete Paint Management Solution</h2>
+       <img src="../Frontend/Assets/paint.jpg" alt="">
+        
+    </div>
+
+    <!-- ========== STATS BAR ========== -->
+    <div class="stats-bar" id="statsBar">
+        <div class="stat-item"><div class="stat-number" id="totalProductsStat">—</div><div class="stat-label">Products</div></div>
+        <div class="stat-item"><div class="stat-number" id="totalBrandsStat">—</div><div class="stat-label">Brands</div></div>
+        <div class="stat-item"><div class="stat-number" id="totalCategoriesStat">—</div><div class="stat-label">Categories</div></div>
+        <div class="stat-item"><div class="stat-number" id="lowStockStat">—</div><div class="stat-label">Low Stock</div></div>
+    </div>
+
+    <!-- ========== TOP PAINT BRANDS (GET /api/brands) ========== -->
+    <section id="brands" class="section">
+        <h2 class="section-title">Top Paint Brands</h2>
+        <div id="brandsContainer" class="brands-grid"><div class="loading"><i class="fas fa-spinner fa-pulse"></i> Loading brands...</div></div>
+    </section>
+
+    <!-- ========== PRODUCT CATEGORIES (GET /api/categories) ========== -->
+    <section id="categories" class="section">
+        <h2 class="section-title">Product Categories</h2>
+        <div id="categoriesContainer" class="categories-grid"><div class="loading"><i class="fas fa-spinner fa-pulse"></i> Loading categories...</div></div>
+    </section>
+
+    <!-- ========== FEATURED PRODUCTS (GET /api/products) ========== -->
+    <section id="products" class="section">
+        <h2 class="section-title">Featured Paints & Coatings</h2>
+        <div id="productsContainer" class="products-grid"><div class="loading"><i class="fas fa-spinner fa-pulse"></i> Loading products...</div></div>
+    </section>
+
+    <div class="footer">
+        <p><i class="fas fa-paint-roller"></i> Paint World Management System © 2026 | Streamline your paint business</p>
+        <p style="margin-top: 0.5rem; font-size:0.8rem;">📍 All data is fetched live from the server.</p>
+    </div>
+</div>
+
+<script>
+    // =================== API CONFIGURATION ===================
+    const API_BASE = "http://127.0.0.1:8000/api";
+    const token = localStorage.getItem("token"); // optional, if routes are protected
+
+    // Helper: fetch with optional auth
+    async function fetchAPI(endpoint, requiresAuth = false) {
+        const headers = { "Accept": "application/json" };
+        if (requiresAuth && token) {
+            headers["Authorization"] = `Bearer ${token}`;
+        }
+        try {
+            const response = await fetch(`${API_BASE}${endpoint}`, { method: "GET", headers });
+            if (response.status === 401) {
+                return { authError: true };
+            }
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            // Normalize response (some endpoints return {data: [...]})
+            return Array.isArray(data) ? data : (data.data || []);
+        } catch (err) {
+            console.error(`Fetch error ${endpoint}:`, err);
+            return { error: true, message: err.message };
+        }
+    }
+
+    // Display "login required" message
+    function showAuthMessage(container, entityName) {
+        container.innerHTML = `<div class="error-msg">
+            <i class="fas fa-lock"></i> Login required to view ${entityName}. 
+            <a href="../login.html" style="color:#5E0B15; text-decoration:underline;">Login here</a>
+        </div>`;
+    }
+
+    // ========== 1. LOAD BRANDS (GET /api/brands) ==========
+    async function loadBrands() {
+        const container = document.getElementById("brandsContainer");
+        const data = await fetchAPI("/brands", false); // try public first
+        if (data?.authError) {
+            showAuthMessage(container, "brands");
+            document.getElementById("totalBrandsStat").innerText = "?";
+            return;
+        }
+        if (!data || data.error || data.length === 0) {
+            container.innerHTML = `<div class="error-msg">No brands available at the moment.</div>`;
+            document.getElementById("totalBrandsStat").innerText = "0";
+            return;
+        }
+        // Show top 6 brands
+        const topBrands = data.slice(0, 6);
+        let html = "";
+        topBrands.forEach(b => {
+            html += `
+                <div class="brand-card">
+                    <i class="fas fa-palette"></i>
+                    <h3>${escapeHtml(b.name)}</h3>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        document.getElementById("totalBrandsStat").innerText = data.length;
+    }
+
+    // ========== 2. LOAD CATEGORIES (GET /api/categories) ==========
+    async function loadCategories() {
+        const container = document.getElementById("categoriesContainer");
+        const data = await fetchAPI("/categories", false);
+        if (data?.authError) {
+            showAuthMessage(container, "categories");
+            document.getElementById("totalCategoriesStat").innerText = "?";
+            return;
+        }
+        if (!data || data.error || data.length === 0) {
+            container.innerHTML = `<div class="error-msg">No categories found.</div>`;
+            document.getElementById("totalCategoriesStat").innerText = "0";
+            return;
+        }
+        const topCats = data.slice(0, 6);
+        let html = "";
+        topCats.forEach(c => {
+            html += `
+                <div class="category-card">
+                    <i class="fas fa-folder-open"></i>
+                    <h3>${escapeHtml(c.name)}</h3>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        document.getElementById("totalCategoriesStat").innerText = data.length;
+    }
+
+    // ========== 3. LOAD PRODUCTS & LOW STOCK INFO ==========
+    async function loadProducts() {
+        const container = document.getElementById("productsContainer");
+        let products = await fetchAPI("/products", false);
+        if (products?.authError) {
+            showAuthMessage(container, "products");
+            document.getElementById("totalProductsStat").innerText = "?";
+            document.getElementById("lowStockStat").innerText = "?";
+            return;
+        }
+        if (!products || products.error || products.length === 0) {
+            container.innerHTML = `<div class="error-msg">No products available.</div>`;
+            document.getElementById("totalProductsStat").innerText = "0";
+            document.getElementById("lowStockStat").innerText = "0";
+            return;
+        }
+
+        // Calculate low stock count (stock <= 10)
+        let lowStockCount = 0;
+        if (token) {
+            // If logged in, get accurate inventory
+            const inventory = await fetchAPI("/inventory", true);
+            if (!inventory?.authError && Array.isArray(inventory)) {
+                lowStockCount = inventory.filter(item => item.stock !== undefined && item.stock <= 10).length;
+            } else {
+                lowStockCount = products.filter(p => p.stock !== undefined && p.stock <= 10).length;
+            }
+        } else {
+            lowStockCount = products.filter(p => p.stock !== undefined && p.stock <= 10).length;
+        }
+        document.getElementById("lowStockStat").innerText = lowStockCount;
+        document.getElementById("totalProductsStat").innerText = products.length;
+
+        // Show first 8 products
+        const featured = products.slice(0, 8);
+        let html = "";
+        featured.forEach(p => {
+            const imageUrl = p.image 
+                ? `http://127.0.0.1:8000/storage/${p.image}` 
+                : "https://placehold.co/400x300?text=Paint+Can";
+            const stock = p.stock !== undefined ? p.stock : "N/A";
+            let stockBadge = `<span class="badge-stock">In Stock (${stock})</span>`;
+            if (stock === 0) stockBadge = `<span class="badge-stock badge-lowstock">Out of Stock</span>`;
+            else if (stock <= 10 && stock > 0) stockBadge = `<span class="badge-stock badge-lowstock">Low Stock (${stock})</span>`;
+            
+            const categoryName = p.category?.name || 'General';
+            const brandName = p.brand?.name || '';
+            html += `
+                <div class="product-card">
+                    <img class="product-img" src="${imageUrl}" alt="${p.name}" onerror="this.src='https://placehold.co/400x300?text=Paint+Product'">
+                    <div class="product-info">
+                        <div class="product-name">${escapeHtml(p.name)}</div>
+                        <div class="product-meta">${escapeHtml(categoryName)} | ${escapeHtml(brandName)}</div>
+                        <div class="product-price">₨ ${Number(p.price).toLocaleString()}</div>
+                        <div style="margin-top: 0.5rem;">${stockBadge}</div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Initialize all sections
+    window.addEventListener("DOMContentLoaded", () => {
+        loadBrands();
+        loadCategories();
+        loadProducts();
+    });
+</script>
+</body>
+</html>
